@@ -207,7 +207,8 @@ class PathMap extends Graph
       else
         [x, y] = @path.centroid(feature)
       @_draw_map_point(x, y)
-      new CityAnimate(@g_layer_circles, x, y, '#ffde00', 8).run()
+      # new CityAnimate(@g_layer_circles, x, y, '#ffde00', 8).run()
+      new CityAnimate(@g_layer_circles, x, y, 'rgb(243, 147, 16)', 8).run()
 
 
   _draw_map_point: (x, y)->
