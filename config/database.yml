@@ -1,0 +1,21 @@
+default: &default
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  username: root
+  password: root
+  host: localhost
+
+development:
+  <<: *default
+  database: data-visual-development
+
+test:
+  <<: *default
+  database: data-visual-test
+
+production:
+  <<: *default
+  database: data-visual-production
+  username: data-visual
+  password: <%= ENV['DATA-VISUAL_DATABASE_PASSWORD'] %>
