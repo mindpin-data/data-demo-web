@@ -1,13 +1,11 @@
 upstream lgm_data_server {
-  server unix:~/web/data-visual/tmp/sockets/unicorn.sock fail_timeout=0;
+  server unix:[! 代码目录]/tmp/sockets/unicorn.sock fail_timeout=0;
 }
 
 server {
-  listen      80;
+  listen      8080;
   server_name localhost;
-  root        ~/web/data-visual/public;
-  access_log  /var/log/nginx/zhengdao.access.log main;
-  error_log   /var/log/nginx/zhengdao.error.log warn;
+  root        [! 代码目录]/public;
   
   location / {
     try_files $uri @app;

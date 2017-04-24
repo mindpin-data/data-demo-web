@@ -17,5 +17,5 @@ test:
 production:
   <<: *default
   database: data-visual-production
-  username: data-visual
-  password: <%= ENV['DATA-VISUAL_DATABASE_PASSWORD'] %>
+  # username: root
+  # password: root
