@@ -54,3 +54,4 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # 以下是自己添加的
 gem 'haml'
+gem 'unicorn'

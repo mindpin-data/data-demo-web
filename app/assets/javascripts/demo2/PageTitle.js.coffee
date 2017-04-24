@@ -17,7 +17,7 @@ class PageTitle extends Graph
 
   draw_points: ->
     points = @svg.append 'image'
-      .attr 'xlink:href', 'assets/title-points.png'
+      .attr 'xlink:href', 'images/title-points.png'
       .attr 'width', @TEXT_SIZE
       .attr 'height', @TEXT_SIZE
       .attr 'x', 10

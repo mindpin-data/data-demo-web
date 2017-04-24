@@ -136,10 +136,10 @@ class PathMap extends Graph
   _draw_warning: ->
     console.log 'warning'
     [x, y] = @projection [113.7, 34.6]
-    new CityAnimate(@, x, y, '#ffffff', 8, 'assets/dafeng.png', '郑州：近期大风').run()
+    new CityAnimate(@, x, y, '#ffffff', 8, 'images/dafeng.png', '郑州：近期大风').run()
 
     [x, y] = @projection [106.9, 27.7]
-    new CityAnimate(@, x, y, '#ffffff', 8, 'assets/dayu.png', '遵义：近期大雨').run()
+    new CityAnimate(@, x, y, '#ffffff', 8, 'images/dayu.png', '遵义：近期大雨').run()
 
 
 class CityAnimate

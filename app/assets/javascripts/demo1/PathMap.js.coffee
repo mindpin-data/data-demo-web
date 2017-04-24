@@ -215,7 +215,7 @@ class PathMap extends Graph
     @g_layer_map_point.selectAll('image').remove()
     @g_layer_map_point.append 'image'
       .attr 'class', 'map-point'
-      .attr 'xlink:href', 'assets/mapicon.png'
+      .attr 'xlink:href', 'images/mapicon.png'
       .attr 'x', x
       .attr 'y', y
       .style 'transform', 'translate(-30px, -50px)'

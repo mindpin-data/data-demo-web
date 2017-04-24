@@ -57,7 +57,7 @@ class OneArea extends Graph
 
     flag
       .append 'image'
-      .attr 'xlink:href', "assets/#{@current_area}.png"
+      .attr 'xlink:href', "images/#{@current_area}.png"
       .attr 'height', @height - 60
       .attr 'width', (@height - 60) / 2 * 3
       .attr 'x', 0
@@ -124,7 +124,7 @@ class OneArea extends Graph
       .append 'image'
       .attr 'x', 215
       .attr 'y', size / 2 + size + 34 + size1 + 30 - size2 / 2
-      .attr 'xlink:href', 'assets/upicon1.png'
+      .attr 'xlink:href', 'images/upicon1.png'
       .attr 'height', size2
       .attr 'width', size2
 

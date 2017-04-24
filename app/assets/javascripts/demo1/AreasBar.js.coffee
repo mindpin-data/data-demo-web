@@ -47,7 +47,7 @@ class AreasBar extends Graph
   draw_flag: (flags, f, h, w, idx, amounts, max, names)->
     flag = flags
       .append 'image'
-      .attr 'xlink:href', "assets/#{f}.png"
+      .attr 'xlink:href', "images/#{f}.png"
       .attr 'height', h - 30
       .attr 'width', (h - 30) / 2 * 3
       .attr 'x', 0

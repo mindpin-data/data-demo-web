@@ -1,0 +1,25 @@
+upstream lgm_data_server {
+  server unix:~/web/data-visual/tmp/sockets/unicorn.sock fail_timeout=0;
+}
+
+server {
+  listen      80;
+  server_name localhost;
+  root        ~/web/data-visual/public;
+  access_log  /var/log/nginx/zhengdao.access.log main;
+  error_log   /var/log/nginx/zhengdao.error.log warn;
+  
+  location / {
+    try_files $uri @app;
+  }
+
+  location @app {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Scheme $scheme;
+
+    proxy_pass http://lgm_data_server;
+  }
+}

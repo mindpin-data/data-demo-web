@@ -35,7 +35,7 @@ class OneArea extends Graph
 
     flag
       .append 'image'
-      .attr 'xlink:href', "assets/icon-#{@current_product}.png"
+      .attr 'xlink:href', "images/icon-#{@current_product}.png"
       .attr 'height', @height / 6 * 2
       .attr 'width', @height / 6 * 2
       .attr 'x', 80 - @height / 6
@@ -110,7 +110,7 @@ class OneArea extends Graph
         .append 'image'
         .attr 'x', 330
         .attr 'y', size / 2 + 10 - size / 2 + y
-        .attr 'xlink:href', 'assets/downicon1.png'
+        .attr 'xlink:href', 'images/downicon1.png'
         .attr 'height', size
         .attr 'width', size
 
