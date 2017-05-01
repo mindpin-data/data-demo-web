@@ -20,12 +20,18 @@ window.BaseTile = class BaseTile
 
   @paper_init: ->
     $root = jQuery('body > .paper')
+
+    if $root.hasClass('large')
+      [w, h] = [2840, 2400]
+    else
+      [w, h] = [1920, 1080] 
+
     $root.css
       position: 'absolute'
       top: 0
       left: 0
-      width: 1920
-      height: 1080
+      width: w
+      height: h
 
     $root.find('> .tile').each (idx, dom)->
       tile = new BaseTile jQuery(dom), $root

@@ -2,6 +2,8 @@ plane_path = 'm25.21488,3.93375c-0.44355,0 -0.84275,0.18332 -1.17933,0.51592c-0.
 
 plane_path = "M25 0 L50 50 L0 50 z"
 
+plane_path = "M461.331,294.545c-11.119-34.221-56.452-50.278-102.081-36.623c-1.106-47.624-30.406-85.779-66.393-85.779c-35.987,0-65.286,38.155-66.393,85.779c-45.629-13.655-90.961,2.403-102.08,36.624c-11.12,34.226,16.114,73.882,61.065,89.65c-27.087,39.176-25.823,87.252,3.286,108.401c29.114,21.152,75.234,7.491,104.123-30.387c28.888,37.878,75.008,51.538,104.122,30.387c29.11-21.149,30.373-69.226,3.286-108.402C445.218,368.426,472.45,328.771,461.331,294.545z"
+
 cn_cities = [
   { name: '北京　', number: 7355291,  lat: 116.4, long: 39.9 }
   { name: '天津　', number: 3963604,  lat: 117.2, long: 39.1 }
@@ -77,7 +79,7 @@ rand_item_of = (arr)->
 
 
 
-class PathMap extends Graph
+class MainMap extends Graph
   draw: ->
     @MAP_STROKE_COLOR = '#021225'
     @MAP_FILL_COLOR = '#323c48'
@@ -98,7 +100,6 @@ class PathMap extends Graph
       @draw_map()
 
       @draw_heatmap()
-      # @draw_circles()
       @svg1 = @draw_svg()
         .style 'position', 'absolute'
         .style 'left', '0'
@@ -134,28 +135,12 @@ class PathMap extends Graph
       .style 'stroke-width', 1
       .style 'fill', @MAP_FILL_COLOR
 
-  draw_circles: ->
-    cities = [].concat(cn_cities).concat(world_cities)
-
-    cities.forEach (p)=>
-      [x, y] = @projection [p.lat, p.long] # 计算对应坐标
-
-      oscale = d3.scaleLinear()
-        .domain [0, max_number]
-        .range [0, 1]
-
-      circle = @g_map.append 'circle'
-        .attr 'cx', x
-        .attr 'cy', y
-        .attr 'r', 8
-        .attr 'fill', '#34cee9'
-        .style 'opacity', oscale(p.number)
 
   draw_heatmap: ->
     heatmapInstance = h337.create({
       # only container is required, the rest will be defaults
       container: jQuery('#heatmap')[0]
-      radius: 8
+      radius: 16
       gradient:
         '0.0': '#34cee9'
         '0.3': '#34cee9'
@@ -197,7 +182,7 @@ class PathMap extends Graph
   _r: (arr, color)->
     p = rand_item_of arr
     [x, y] = @projection [p.lat, p.long]
-    new CityAnimate(this, x, y, color, 4).run()
+    new CityAnimate(this, x, y, color, 8).run()
 
 
 class CityAnimate
@@ -220,18 +205,12 @@ class CityAnimate
     @plane = @g_map.append 'path'
       .attr 'class', 'plane'
       .attr 'd', plane_path
-      # .attr 'fill', '#ff8711'
       .attr 'fill', 'white'
 
   # 画贵阳到收货地的航线
   draw_route: ->
     @route = @g_map.append 'path'
       .attr 'd', "M#{@gyx} #{@gyy} L#{@x} #{@y}"
-      # .attr 'x1', @gyx
-      # .attr 'y1', @gyy
-      # .attr 'x2', @x
-      # .attr 'y2', @y
-      # .style 'stroke', 'rgb(255, 132, 65)'
       .style 'stroke', 'transparent'
 
   # 飞行
@@ -241,34 +220,13 @@ class CityAnimate
 
     dx = @x - @gyx
     dy = @y - @gyy
-    r = 90 - Math.atan2(-dy, dx) * 180 / Math.PI
 
-    scale = 0.3
-    xoff = 50 * scale * 0.5
-    yoff = 50 * scale * 0.5
+    center_xoff = 586
+    center_yoff = 696
 
-    # @plane
-    #   .transition()
-    #   .duration l * 10
-    #   .ease d3.easeCubicInOut
-    #   .attrTween 'transform', =>
-    #     (t)=>
-    #       p = path.getPointAtLength(t * l)
-    #       @route_circle_wave(p.x, p.y)
-    #       "translate(#{p.x - xoff}, #{p.y - yoff}) rotate(#{r}, #{xoff}, #{yoff}) scale(#{scale})"
-
-    #   .on 'end', =>
-    #     @route.remove()
-    #     @three_circles_wave()
-
-    #     @plane
-    #       .transition()
-    #       .duration 1000
-    #       .styleTween 'opacity', ->
-    #         (t)->
-    #           1 - t
-    #       .on 'end', =>
-    #         @plane.remove()
+    scale = 0.08
+    xoff = center_xoff * scale * 0.5
+    yoff = center_yoff * scale * 0.5
 
     count = 0
     jQuery({ t: 0 }).animate({ t: 1 }
@@ -277,17 +235,17 @@ class CityAnimate
           p = path.getPointAtLength(now * l)
 
           count += 1
-          if count % 4 == 0
+          if count % 8 == 0
             @route_circle_wave(p.x, p.y)
           
           @plane
-            .attr 'transform', "translate(#{p.x - xoff}, #{p.y - yoff}) rotate(#{r}, #{xoff}, #{yoff}) scale(#{scale})"
+            .attr 'transform', "translate(#{p.x - xoff}, #{p.y - yoff}) scale(#{scale})"
 
         duration: Math.sqrt(l) * 150
         easing: 'linear'
         done: =>
           @route.remove()
-          @three_circles_wave()
+          @three_paths_wave()
 
           jQuery({ o: 1 }).animate({ o: 0 }
             {
@@ -330,55 +288,47 @@ class CityAnimate
 
 
   # 在指定的位置用指定的颜色显示三个依次扩散的光圈
-  three_circles_wave: ->
-    @circle_wave(0)
-    @circle_wave(500)
-    @circle_wave(1000)
+  three_paths_wave: ->
+    @path_wave(0)
+    @path_wave(500)
+    @path_wave(1000)
 
   # 在指定的位置用指定的颜色显示扩散光圈
-  circle_wave: (delay)->
-    circle = @g_map.append 'circle'
-      .attr 'cx', @x
-      .attr 'cy', @y
+  path_wave: (delay)->
+    center_xoff = 586
+    center_yoff = 696
+
+    scale = 0.1
+    x = @x - center_xoff * scale * 0.5
+    y = @y - center_yoff * scale * 0.5
+
+    path = @g_map.append 'path'
+      .attr 'd', plane_path
       .attr 'stroke', @color
       .attr 'stroke-width', @width
       .attr 'fill', 'transparent'
+      .attr 'transform', "translate(#{x}, #{y}) scale(#{scale})"
 
-    # rscale = d3.scaleLinear()
-    #   .domain [0, 1]
-    #   .range [5, 40]
-
-    # oscale = d3.scaleLinear()
-    #   .domain [0, 1]
-    #   .range [1, 0]
-
-    # circle
-    #   .transition()
-    #   .ease d3.easeCubicOut
-    #   .duration 2000
-    #   .delay delay
-    #   .attrTween 'r', (d)->
-    #     (t)-> rscale(t)
-    #   .styleTween 'opacity', (d)->
-    #     (t)-> oscale(t)
-    #   .on 'end', ->
-    #     circle.remove()
-
-    jQuery({ r: 5, o: 1 }).delay(delay).animate({ r: 50, o: 0 }
+    jQuery({ scale: 0.1, o: 1}).delay(delay).animate({ scale: 0.4, o: 0}
       {
-        step: (now, fx)->
-          if fx.prop == 'r'
-            circle.attr 'r', now
+        step: (now, fx)=>
+          if fx.prop == 'scale'
+            scale = now
+            x = @x - center_xoff * scale * 0.5
+            y = @y - center_yoff * scale * 0.5
+
+            path.attr 'transform', "translate(#{x}, #{y}) scale(#{scale})"
+
           if fx.prop == 'o'
-            circle.style 'opacity', now
+            path.style 'opacity', now
 
         duration: 2000
         easing: 'easeOutQuad'
         done: ->
-          circle.remove()
+          path.remove()
       }
     )
 
 
 
-BaseTile.register 'path-map', PathMap
+BaseTile.register 'main-map', MainMap
