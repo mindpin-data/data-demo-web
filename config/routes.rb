@@ -4,4 +4,5 @@ Rails.application.routes.draw do
   root to: 'home#index'
 
   get '/:demo' => 'home#demo'
+  get '/:demo/data' => 'home#data'
 end

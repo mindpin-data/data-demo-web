@@ -1,5 +1,11 @@
 class LineChartTitle extends Graph
+  prepare_data: ->
+    @total_data = window.map_data.total
+    @export_data = window.map_data.export
+
   draw: ->
+    @prepare_data()
+
     @svg = @draw_svg()
 
     @c1 = '#00c713'
@@ -11,6 +17,7 @@ class LineChartTitle extends Graph
     @draw_texts()
 
     jQuery(document).on 'data-map:next-draw', =>
+      @prepare_data()
       @draw_texts()
 
   draw_texts: ->
@@ -19,7 +26,9 @@ class LineChartTitle extends Graph
     texts = @texts = @svg.append('g')
       .style 'transform', 'translate(1100px, 0px)'
 
-    size = 40
+    scale = 2840 / 1920
+
+    size = 40 * scale
     texts
       .append 'text'
       .attr 'x', -1050
@@ -32,14 +41,14 @@ class LineChartTitle extends Graph
 
     t1 = texts
       .append 'text'
-      .attr 'x', -1050 + 270
+      .attr 'x', -1050 + 270 * scale
       .attr 'y', @height / 2
       .attr 'dy', '.33em'
-      .text 889718890
+      .text @total_data
       .style 'font-size', "#{size * 1.5}px"
       .style 'fill', @number_color
 
-    jQuery({n: 0}).animate({n: 889718890}
+    jQuery({n: 0}).animate({n: @total_data}
       {
         step: (now)->
           t1.text ~~now
@@ -49,7 +58,7 @@ class LineChartTitle extends Graph
 
     texts
       .append 'text'
-      .attr 'x', -1050 + 600
+      .attr 'x', -1050 + 600 * scale
       .attr 'y', @height / 2
       .attr 'dy', '.33em'
       .text '产品出口销量'
@@ -59,14 +68,14 @@ class LineChartTitle extends Graph
 
     t2 = texts
       .append 'text'
-      .attr 'x', -1050 + 600 + 270
+      .attr 'x', -1050 + (600 + 270) * scale
       .attr 'y', @height / 2
       .attr 'dy', '.33em'
-      .text 142210067
+      .text @export_data
       .style 'font-size', "#{size * 1.5}px"
       .style 'fill', @number_color
 
-    jQuery({n: 0}).animate({n: 142210067}
+    jQuery({n: 0}).animate({n: @export_data}
       {
         step: (now)->
           t2.text ~~now
@@ -74,19 +83,22 @@ class LineChartTitle extends Graph
     )
 
 
-    size = 20
+    size = 20 * scale
+    left = 600 * scale
+    topoff = 16 * scale
+
     texts
       .append 'rect'
-      .attr 'x', 250
-      .attr 'y', @height / 2 - 7 + 30
+      .attr 'x', left
+      .attr 'y', @height / 2 - 7 + topoff
       .attr 'width', 30
       .attr 'height', 15
       .style 'fill', @c1
 
     texts
       .append 'text'
-      .attr 'x', 290
-      .attr 'y', @height / 2 + 30
+      .attr 'x', left + 40 * scale
+      .attr 'y', @height / 2 + topoff
       .attr 'dy', '.33em'
       .text '实际销量'
       .style 'font-size', "#{size}px"
@@ -94,16 +106,16 @@ class LineChartTitle extends Graph
 
     texts
       .append 'rect'
-      .attr 'x', 390
-      .attr 'y', @height / 2 - 7 + 30
+      .attr 'x', left + 140 * scale
+      .attr 'y', @height / 2 - 7 + topoff
       .attr 'width', 30
       .attr 'height', 15
       .style 'fill', @c2
 
     texts
       .append 'text'
-      .attr 'x', 430
-      .attr 'y', @height / 2 + 30
+      .attr 'x', left + 180 * scale
+      .attr 'y', @height / 2 + topoff
       .attr 'dy', '.33em'
       .text '预测销量'
       .style 'font-size', "#{size}px"
@@ -111,16 +123,16 @@ class LineChartTitle extends Graph
 
     texts
       .append 'rect'
-      .attr 'x', 530
-      .attr 'y', @height / 2 - 7 + 30
+      .attr 'x', left + 280 * scale
+      .attr 'y', @height / 2 - 7 + topoff
       .attr 'width', 30
       .attr 'height', 15
       .style 'fill', @c3
 
     texts
       .append 'text'
-      .attr 'x', 570
-      .attr 'y', @height / 2 + 30
+      .attr 'x', left + 320 * scale
+      .attr 'y', @height / 2 + topoff
       .attr 'dy', '.33em'
       .text '上年同比销量'
       .style 'font-size', "#{size}px"

@@ -10,6 +10,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20170501131115) do
+
+  create_table "city_amounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string  "name"
+    t.string  "amount"
+    t.decimal "long",     precision: 10
+    t.decimal "lat",      precision: 10
+    t.boolean "in_china"
+  end
+
+  create_table "obor_countries", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string  "name"
+    t.string  "code"
+    t.decimal "total",          precision: 10
+    t.decimal "percent_change", precision: 10
+    t.string  "now"
+    t.string  "history"
+  end
+
+  create_table "total_amounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.decimal "total",    precision: 10
+    t.decimal "export",   precision: 10
+    t.string  "now"
+    t.string  "forecast"
+    t.string  "history"
+  end
 
 end

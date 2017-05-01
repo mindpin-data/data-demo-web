@@ -1,9 +1,20 @@
 class LineChart extends Graph
+  prepare_data: ->
+    @idx = -1 if not @idx
+    @idx += 1
+    @idx = 0 if @idx == 3
+
+    @materials = window.map_data.materials
+    current_product = @materials[@idx]
+
+    @data0 = current_product.now
+    @data1 = current_product.history
+    @data2 = current_product.guiding
+
   draw: ->
+    @prepare_data()
+
     @svg = @draw_svg()
-    @data0 = [45, 45, 40, 48, 42, 50]
-    @data1 = [50, 45, 35, 40, 45, 48, 50, 55, 58, 49, 42, 47]
-    @data2 = [55, 52, 51, 57, 58, 59, 61, 64, 53, 58, 59, 60]
 
     @h = @height - 40
     @w = @width - 60
@@ -27,6 +38,7 @@ class LineChart extends Graph
     @draw_lines()
 
     jQuery(document).on 'data-map:next-draw', =>
+      @prepare_data()
       @draw_lines()
 
   make_def: (r, g, b, id)->

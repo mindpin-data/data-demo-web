@@ -1,28 +1,50 @@
 class AreasBar extends Graph
+  prepare_data: ->
+    @scourges = window.map_data.scourges
+
   draw: ->
+    @prepare_data()
+
     @svg = @draw_svg()
     @draw_stitle()
     @draw_infos()
+
+    jQuery(document).on 'data-map:next-draw', =>
+      @prepare_data()
+      @draw_infos()
 
   draw_stitle: ->
     size = 24
 
     @svg
       .append 'text'
-      .attr 'x', 50
+      .attr 'x', 140
       .attr 'y', size / 2 + 30
       .attr 'dy', '.33em'
       .text "原料产地自然灾害预警"
       .style 'font-size', size + 'px'
       .style 'fill', '#ffffff'
 
+    if @scourges.length == 0
+      @svg
+        .append 'text'
+        .attr 'x', 140
+        .attr 'y', size / 2 + 30 + 40
+        .attr 'dy', '.33em'
+        .text "目前没有灾害预警信息"
+        .style 'font-size', size + 'px'
+        .style 'fill', '#ffffff'
+
   draw_infos: ->
-    panel = @svg.append('g')
+    @panel.remove() if @panel?
+
+    @panel = @svg.append('g')
       .style 'transform', 'translate(-30px, 70px)'
 
-
-    @draw_info panel, 'images/dayu-0.png', '遵义', '近期大雨', '2017-03-02'
-    @draw_info panel, 'images/dafeng-0.png', '郑州', '近期大风', '2017-03-02', 60
+    top = 0
+    @scourges.forEach (x)=>
+      @draw_info @panel, "images/scourges/#{x.scourge}.png", x.name, "近期#{x.scourge}", x.date, top
+      top += 40
 
   draw_info: (panel, img, city, weather, date, y = 0)->
 

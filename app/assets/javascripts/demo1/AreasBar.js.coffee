@@ -1,11 +1,24 @@
 class AreasBar extends Graph
+  prepare_data: ->
+    countries = window.map_data.countries
+
+    top = (countries.sort (a, b)-> 
+      b.total - a.total
+    )[0..5]
+
+    @farr = top.map (x)-> x.code
+    @amounts = top.map (x)-> x.total
+    @names = top.map (x)-> x.name
+
   draw: ->
+    @prepare_data()
     @svg = @draw_svg()
 
     @make_defs()
     @draw_flags()
 
     jQuery(document).on 'data-map:next-draw', =>
+      @prepare_data()
       @draw_flags()
 
 
@@ -33,21 +46,17 @@ class AreasBar extends Graph
 
     @flags = @svg.append('g')
 
-    farr = ['xinjiapo', 'yindu', 'yuenan', 'malai', 'yinni']
-    amounts = [6324210, 6004324, 5132828, 4078910, 3876152]
-    names = ['新加坡', '印度', '越南', '马来西亚', '印尼']
-
     max = 6424210
 
     h = @height / 5
-    w = @width * 0.8
-    for f, idx in farr
-      @draw_flag @flags, f, h, w, idx, amounts, max, names
+    w = @width * 0.8 - 100
+    for f, idx in @farr
+      @draw_flag @flags, f, h, w, idx, @amounts, max, @names
 
   draw_flag: (flags, f, h, w, idx, amounts, max, names)->
     flag = flags
       .append 'image'
-      .attr 'xlink:href', "images/#{f}.png"
+      .attr 'xlink:href', "images/countries/#{f}.png"
       .attr 'height', h - 30
       .attr 'width', (h - 30) / 2 * 3
       .attr 'x', 0
@@ -57,7 +66,8 @@ class AreasBar extends Graph
 
     amount = amounts[idx]
     bh = h - 40
-    bw = w * (amount / max)
+    bw = w * (amount / max) + 80
+
     bar = flags
       .append('rect')
       .attr 'fill', 'url(#areas-bar-linear)'

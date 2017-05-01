@@ -1,13 +1,4 @@
-# ydyl_areas = [
-#   'KAZ', 'KGZ', 'TJK', 'IRN', 'TUR', 'RUS', 'DEU', 'NLD'
-#   'VNM', 'MYS', 'IDN', 'LKA', 'IND', 'KEN', 'GRC', 'ITA'
-
-#   'THA', 'SGP'
-# ]
-
-# 根据 https://wenku.baidu.com/view/3e592e4b767f5acfa1c7cd51.html
-
-ydyl_areas = [
+YDYL_AREAS = [
   # 中国、蒙古、俄罗斯
   'CHN', 'RUS', 'MNG'
 
@@ -51,17 +42,7 @@ ydyl_areas = [
   'KEN'
 ]
 
-# ydyl_areas = ['BRN']
-
-toggle_areas = [
-  'THA' # 泰国 
-  'IND' # 印度
-  'VNM' # 越南
-  'MYS' # 马来西亚
-  'IDN' # 印尼
-]
-
-cities_0 = [
+YDYL_CITIES_NORTH = [
   {c: '西安', lat: 34.34, long: 108.94}
   {c: '兰州', lat: 36.07, long: 103.84}
   {c: '乌鲁木齐', lat: 43.83, long: 87.62}
@@ -76,7 +57,7 @@ cities_0 = [
   {c: '鹿特丹', lat: 51.9, long: 4.5} # 荷兰
 ]
 
-cities_1 = [
+YDYL_CITIES_SOUTH = [
   {c: '福州', lat: 26.0, long: 119.0}
   {c: '泉州', lat: 24.9, long: 118.6}
   {c: '广州', lat: 23.0, long: 113.0}
@@ -95,7 +76,13 @@ cities_1 = [
 
 
 class PathMap extends Graph
+  prepare_data: ->
+    @TOGGLE_AREAS = window.map_data.countries.map (x)->
+      x.code
+
   draw: ->
+    @prepare_data()
+
     @MAP_STROKE_COLOR = '#021225'
     
     # @MAP_FILL_COLOR = '#323c48'
@@ -112,7 +99,7 @@ class PathMap extends Graph
 
     @svg = @draw_svg()
 
-    @areas = ydyl_areas
+    @areas = YDYL_AREAS
     @current_area = 'THA'
     @main_area = 'CHN'
 
@@ -164,11 +151,13 @@ class PathMap extends Graph
 
 
   next_draw: ->
+    @prepare_data()
+    
     @aidx = 0 if not @aidx?
 
     @aidx += 1
-    @aidx = 0 if @aidx == toggle_areas.length
-    @current_area = toggle_areas[@aidx]
+    @aidx = 0 if @aidx == @TOGGLE_AREAS.length
+    @current_area = @TOGGLE_AREAS[@aidx]
 
     @draw_map()
     @draw_current_city()
@@ -248,11 +237,11 @@ class PathMap extends Graph
       ani()
 
 
-    for city in cities_0
+    for city in YDYL_CITIES_NORTH
       [city.x, city.y] = @projection [city.long, city.lat]
       _draw_city city
 
-    for city in cities_1
+    for city in YDYL_CITIES_SOUTH
       [city.x, city.y] = @projection [city.long, city.lat]
       _draw_city city
 
@@ -274,8 +263,8 @@ class PathMap extends Graph
       .y (d)=> d.y
       .curve(d3.curveCatmullRom.alpha(0.5))
 
-    _draw_curve line, cities_0, '#cdff41'
-    _draw_curve line, cities_1, '#ff7c41'
+    _draw_curve line, YDYL_CITIES_NORTH, '#cdff41'
+    _draw_curve line, YDYL_CITIES_SOUTH, '#ff7c41'
 
 
 

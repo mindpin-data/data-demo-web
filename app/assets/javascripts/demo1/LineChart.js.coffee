@@ -1,8 +1,19 @@
 class LineChart extends Graph
+  prepare_data: ->
+    countries = window.map_data.countries
+
+    @aidx = 0 if not @aidx?
+    @aidx += 1
+    @aidx = 0 if @aidx == countries.length
+    @current_area = countries[@aidx]
+
+    @data0 = @current_area.now
+    @data1 = @current_area.history
+
   draw: ->
+    @prepare_data()
+
     @svg = @draw_svg()
-    @data0 = [0, 35, 100, 140]
-    @data1 = [0, 30, 60, 80, 110, 140]
 
     @h = @height - 40
     @w = @width - 60
@@ -28,22 +39,7 @@ class LineChart extends Graph
       @next_draw()
 
   next_draw: ->
-    @aidx = 0 if not @aidx
-    
-    @data0 = @data0.map (x, idx)=>
-      return x if idx == 0
-      y = x + Math.random() * 10 - + Math.random() * 10
-      y = 30 if y < 30
-      y = 180 if y > 180
-      y
-
-    @data1 = @data1.map (x, idx)=>
-      return x if idx == 0 
-      y = x + Math.random() * 10 - + Math.random() * 10
-      y = 30 if y < 30
-      y = 180 if y > 180
-      y
-
+    @prepare_data()
     @draw_lines()
 
   make_def: (r, g, b, id)->

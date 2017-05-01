@@ -1,27 +1,16 @@
-data = [
-  { lat: 103, long: 30, d: 30, type: 'lajiao'}
-  { lat: 110, long: 29, d: 20, type: 'lajiao'}
-  { lat: 106.9, long: 27.7, d: 25, type: 'lajiao'}
-  { lat: 104, long: 26, d: 20, type: 'lajiao'}
-  { lat: 106, long: 23, d: 20, type: 'lajiao'}
-
-  { lat: 114.3, long: 28.7, d: 20, type: 'shengjiang'}
-  { lat: 106.3, long: 29.6, d: 17, type: 'shengjiang'}
-  { lat: 103.7, long: 26.8, d: 23, type: 'shengjiang'}
-  { lat: 108.6, long: 25.5, d: 24, type: 'shengjiang'}
-
-  { lat: 113.7, long: 34.6, d: 30, type: 'dadou'}
-  { lat: 105.1, long: 28.7, d: 25, type: 'dadou'}
-  { lat: 103.7, long: 26.8, d: 24, type: 'dadou'}
-  { lat: 111.8, long: 24.4, d: 20, type: 'dadou'}
-  { lat: 100.2, long: 23.1, d: 19, type: 'dadou'}
-]
-
-products = ['lajiao', 'shengjiang', 'dadou']
-
-
 class PathMap extends Graph
+  prepare_data: ->
+    @localities = window.map_data.localities
+    @materials = window.map_data.materials
+    @colors = {}
+    @materials.forEach (x)=>
+      @colors[x.name] = x.color
+
+    @scourges = window.map_data.scourges
+
   draw: ->
+    @prepare_data()
+
     @MAP_STROKE_COLOR = '#021225'
     @MAP_FILL_COLOR = '#323c48'
     # @MAP_FILL_COLOR = '#0f2438'
@@ -36,16 +25,17 @@ class PathMap extends Graph
       @init()
 
       @idx = 0
-      @current_product = products[0]
+      @current_product = @materials[0]
       @draw_map()
 
       jQuery(document).on 'data-map:next-draw', =>
+        @prepare_data()
         @draw_next()
 
   draw_next: ->
     @idx += 1
     @idx = 0 if @idx == 3
-    @current_product = products[@idx]
+    @current_product = @materials[@idx]
 
     @_draw_texts()
     @_draw_circle()
@@ -95,9 +85,10 @@ class PathMap extends Graph
         .style 'font-size', size + 'px'
         .style 'fill', '#ffffff'
 
-    _text '#f33', '辣椒原产地', 0, if @current_product == 'lajiao' then 1 else 0.3
-    _text '#ff3', '生姜原产地', 50, if @current_product == 'shengjiang' then 1 else 0.3
-    _text '#3f3', '大豆原产地', 100, if @current_product == 'dadou' then 1 else 0.3
+    top = 0
+    @materials.forEach (x)=>
+      _text x.color, "#{x.name}原产地", top, if @current_product.name == x.name then 1 else 0.3
+      top += 50
 
 
 
@@ -118,28 +109,22 @@ class PathMap extends Graph
     @points.remove() if @points?
     points = @points = @layer_map.append 'g'
 
-    for d in data
-      [x, y] = @projection [d.lat, d.long]
+    for d in @localities
+      [x, y] = @projection [d.long, d.lat]
 
       points.append 'circle'
         .attr 'class', 'chandi'
         .attr 'cx', x
         .attr 'cy', y
-        .attr 'r', d.d
-        .attr 'fill', =>
-          return 'rgba(255, 51, 51, 0.7)' if d.type == 'lajiao'
-          return 'rgba(255, 255, 51, 0.7)' if d.type == 'shengjiang'
-          return 'rgba(51, 255, 51, 0.7)' if d.type == 'dadou'
+        .attr 'r', d.amount
+        .attr 'fill', => @colors[d.material]
         .style 'opacity', =>
-          if d.type == @current_product then 1 else 0.05
+          if d.material == @current_product.name then 1 else 0.1
 
   _draw_warning: ->
-    console.log 'warning'
-    [x, y] = @projection [113.7, 34.6]
-    new CityAnimate(@, x, y, '#ffffff', 8, 'images/dafeng.png', '郑州：近期大风').run()
-
-    [x, y] = @projection [106.9, 27.7]
-    new CityAnimate(@, x, y, '#ffffff', 8, 'images/dayu.png', '遵义：近期大雨').run()
+    @scourges.forEach (s)=>
+      [x, y] = @projection [s.long, s.lat]
+      new CityAnimate(@, x, y, '#ffffff', 8, "images/scourges/#{s.scourge}-0.png", "#{s.name}：近期#{s.scourge}").run()
 
 
 class CityAnimate

@@ -1,39 +1,22 @@
-toggle_areas = [
-  # 'THA', 'SGP', 'IND', 'VNM', 'MYS', 'IDN'
-  'taiguo', 'yindu', 'yuenan', 'malai', 'yinni'
-]
-
-area_data = {
-  taiguo: 
-    d: 2817109
-    n: '泰国'
-    p: 14.3
-  yinni: 
-    d: 3876152
-    n: '印尼'
-    p: 15.4
-  yuenan: 
-    d: 5132828
-    n: '越南'
-    p: 16.5
-  malai: 
-    d: 4078910
-    n: '马来西亚'
-    p: 17.6
-  yindu: 
-    d: 6004324
-    n: '印度'
-    p: 18.7
-}
-
-# console.log area_data['taiguo']
-
-
 class OneArea extends Graph
+  prepare_data: ->
+    @AREA_DATA = {}
+    window.map_data.countries.forEach (x)=>
+      @AREA_DATA[x.code] = {
+        n: x.name
+        d: x.total
+        p: x.percent_change
+      }
+
+    @TOGGLE_AREAS = window.map_data.countries.map (x)->
+      x.code
+
   draw: ->
+    @prepare_data()
+
     @svg = @draw_svg()
 
-    @current_area = 'taiguo'
+    @current_area = @TOGGLE_AREAS[0]
 
     @draw_flag()
     @draw_texts()
@@ -42,10 +25,12 @@ class OneArea extends Graph
       @next_draw()
 
   next_draw: ->
+    @prepare_data()
+
     @aidx = 0 if not @aidx?
     @aidx += 1
-    @aidx = 0 if @aidx == toggle_areas.length
-    @current_area = toggle_areas[@aidx]
+    @aidx = 0 if @aidx == @TOGGLE_AREAS.length
+    @current_area = @TOGGLE_AREAS[@aidx]
 
     @draw_flag()
     @draw_texts()
@@ -57,7 +42,7 @@ class OneArea extends Graph
 
     flag
       .append 'image'
-      .attr 'xlink:href', "images/#{@current_area}.png"
+      .attr 'xlink:href', "images/countries/#{@current_area}.png"
       .attr 'height', @height - 60
       .attr 'width', (@height - 60) / 2 * 3
       .attr 'x', 0
@@ -76,7 +61,7 @@ class OneArea extends Graph
       .attr 'x', 0
       .attr 'y', size / 2 + 10
       .attr 'dy', '.33em'
-      .text "#{area_data[@current_area].n}销量"
+      .text "#{@AREA_DATA[@current_area].n}销量"
       .style 'font-size', size + 'px'
       .style 'fill', '#ffffff'
 
@@ -90,7 +75,7 @@ class OneArea extends Graph
       .style 'font-size', size1 + 'px'
       .style 'fill', '#ffde00'
 
-    jQuery({d: 0}).animate({d: area_data[@current_area].d}
+    jQuery({d: 0}).animate({d: @AREA_DATA[@current_area].d}
       {
         step: (now)->
           number.text Math.floor(now)
@@ -109,7 +94,7 @@ class OneArea extends Graph
       .style 'font-size', size2 + 'px'
       .style 'fill', '#ffffff'
 
-    jQuery({p: 0}).animate({p: area_data[@current_area].p}
+    jQuery({p: 0}).animate({p: @AREA_DATA[@current_area].p}
       {
         step: (now)->
           t = Math.floor(now * 10) / 10

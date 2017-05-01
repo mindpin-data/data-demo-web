@@ -1,21 +1,23 @@
-products = ['lajiao', 'shengjiang', 'dadou']
-products_colors = ['#f33', '#ff3', '#3f3']
+class Material extends Graph
+  prepare_data: ->
+    @materials = window.map_data.materials
 
-class OneArea extends Graph
   draw: ->
+    @prepare_data()
+
     @svg = @draw_svg()
 
     @idx = -1
     @_draw()
 
     jQuery(document).on 'data-map:next-draw', =>
+      @prepare_data()
       @_draw()
 
   _draw: ->
     @idx += 1
     @idx = 0 if @idx == 3
-    @current_product = products[@idx]
-    @current_product_color = products_colors[@idx]
+    @current_product = @materials[@idx]
 
     @draw_icon()
     @draw_texts()
@@ -30,12 +32,12 @@ class OneArea extends Graph
       .attr 'r', @height / 4
       .attr 'cx', 80
       .attr 'cy', @height / 2
-      .attr 'fill', @current_product_color
+      .attr 'fill', @current_product.color
       .style 'opacity', '0.5'
 
     flag
       .append 'image'
-      .attr 'xlink:href', "images/icon-#{@current_product}.png"
+      .attr 'xlink:href', "images/materials/#{@current_product.name}.png"
       .attr 'height', @height / 6 * 2
       .attr 'width', @height / 6 * 2
       .attr 'x', 80 - @height / 6
@@ -48,9 +50,9 @@ class OneArea extends Graph
       .attr 'class', 'texts'
       .style 'transform', 'translate(160px, 48px)'
 
-    @draw_text texts, '即时采购价', 4.122, 0, true
-    @draw_text texts, '去年同期价', 4.782, 40
-    @draw_text texts, '当前指导价', 4.339, 80
+    @draw_text texts, '即时采购价', @current_product.current_now, 0, true
+    @draw_text texts, '去年同期价', @current_product.current_history, 40
+    @draw_text texts, '当前指导价', @current_product.current_guiding, 80
 
 
   draw_text: (texts, label, number, y, flag = false)->
@@ -99,7 +101,7 @@ class OneArea extends Graph
         .style 'font-size', size + 'px'
         .style 'fill', '#ffffff'
 
-      jQuery({ n: 0 }).animate({ n: 2.34 }
+      jQuery({ n: 0 }).animate({ n: @current_product.percent_change }
         {
           step: (now)->
             tp.text "#{~~(now * 100) / 100}‰"
@@ -116,4 +118,4 @@ class OneArea extends Graph
 
 
 
-BaseTile.register 'one-area', OneArea
+BaseTile.register 'material', Material

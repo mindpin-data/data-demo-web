@@ -1,12 +1,16 @@
 class LineChart extends Graph
+  prepare_data: ->
+    @data0 = window.map_data.now
+    @data1 = window.map_data.forecast
+    @data2 = window.map_data.history
+
   draw: ->
+    @prepare_data()
+
     @svg = @draw_svg()
-    @data0 = [0, 8, 15, 20, 26, 32, 38, 52, 59, 66, 70, 84, 88]
-    @data1 = [0, 6, 13, 22, 27, 31, 35, 50, 54, 60, 66, 75, 81]
-    @data2 = [0, 4, 10, 12, 19, 20, 26, 32, 37, 41, 43, 49, 58]
 
     @h = @height - 40
-    @w = @width - 60
+    @w = @width - 200
     @gap = (@w - 30) / 5
 
     @c1 = '#00c713'
@@ -25,6 +29,7 @@ class LineChart extends Graph
     @draw_lines()
 
     jQuery(document).on 'data-map:next-draw', =>
+      @prepare_data()
       @draw_lines()
 
   draw_lines: ->
