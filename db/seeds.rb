@@ -28,3 +28,15 @@ CityAmount.sample[:world_cities].each {|x|
 }
 
 TotalAmount.create(TotalAmount.sample)
+
+Material.sample[:materials].each {|x|
+  Material.create(x)
+}
+
+Scourge.sample[:scourges].each {|x|
+  Scourge.create(x)
+}
+
+Locality.sample[:localities].each {|x|
+  Locality.create(x)
+}

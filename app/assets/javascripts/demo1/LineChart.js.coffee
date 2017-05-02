@@ -76,31 +76,21 @@ class LineChart extends Graph
       .y (d)=> @yscale d
       .curve(d3.curveCatmullRom.alpha(0.5))
 
-    arealine1 = d3.line()
-      .x (d, idx)=>
-        if idx == 0
-          @xscale 3
-        else if idx == 1
-          @xscale 0
-        else
-          @xscale idx - 2
-      .y (d, idx)=>
-        @yscale d
+    create_line = (data)=>
+      d3.line()
+        .x (d, idx)=>
+          if idx == 0
+            @xscale data.length - 1
+          else if idx == 1
+            @xscale 0
+          else
+            @xscale idx - 2
 
-    arealine2 = d3.line()
-      .x (d, idx)=>
-        if idx == 0
-          @xscale 5
-        else if idx == 1
-          @xscale 0
-        else
-          @xscale idx - 2
-      .y (d, idx)=>
-        @yscale d
+        .y (d, idx)=>
+          @yscale d
 
     @panel.selectAll('path.pre-line').remove()
     @panel.selectAll('circle').remove()
-
 
     _draw = (arealine, line, data, color, fill)=>
       _data = data.map (x)-> 0
@@ -152,8 +142,8 @@ class LineChart extends Graph
           .duration duration
           .ease d3.easeCubicOut
 
-    _draw arealine1, line1, @data0, @c1, 'url(#line-chart-linear1)'
-    _draw arealine2, line1, @data1, @c2, 'url(#line-chart-linear2)'
+    _draw create_line(@data0), line1, @data0, @c1, 'url(#line-chart-linear1)'
+    _draw create_line(@data1), line1, @data1, @c2, 'url(#line-chart-linear2)'
 
 
   draw_axis: ->

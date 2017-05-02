@@ -55,7 +55,7 @@ class MainMap extends Graph
   draw_map: ->
     # http://s.4ye.me/ziMnfK
 
-    @map_scale = 0.16
+    @map_scale = 0.17
     # @projection = d3.geoMercator()
     @projection = d3.geoEquirectangular()
       .center [8, 13]

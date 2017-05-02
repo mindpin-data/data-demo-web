@@ -15,26 +15,53 @@ ActiveRecord::Schema.define(version: 20170501131115) do
   create_table "city_amounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string  "name"
     t.string  "amount"
-    t.decimal "long",     precision: 10
-    t.decimal "lat",      precision: 10
+    t.float   "long",     limit: 24
+    t.float   "lat",      limit: 24
     t.boolean "in_china"
   end
 
+  create_table "localities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "material"
+    t.float  "amount",   limit: 24
+    t.float  "long",     limit: 24
+    t.float  "lat",      limit: 24
+  end
+
+  create_table "materials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "name"
+    t.string "color"
+    t.float  "current_now",     limit: 24
+    t.float  "current_history", limit: 24
+    t.float  "current_guiding", limit: 24
+    t.float  "percent_change",  limit: 24
+    t.string "now"
+    t.string "history"
+    t.string "guiding"
+  end
+
   create_table "obor_countries", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string  "name"
-    t.string  "code"
-    t.decimal "total",          precision: 10
-    t.decimal "percent_change", precision: 10
-    t.string  "now"
-    t.string  "history"
+    t.string "name"
+    t.string "code"
+    t.float  "total",          limit: 24
+    t.float  "percent_change", limit: 24
+    t.string "now"
+    t.string "history"
+  end
+
+  create_table "scourges", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "name"
+    t.string "scourge"
+    t.string "date"
+    t.float  "long",    limit: 24
+    t.float  "lat",     limit: 24
   end
 
   create_table "total_amounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.decimal "total",    precision: 10
-    t.decimal "export",   precision: 10
-    t.string  "now"
-    t.string  "forecast"
-    t.string  "history"
+    t.float  "total",    limit: 24
+    t.float  "export",   limit: 24
+    t.string "now"
+    t.string "forecast"
+    t.string "history"
   end
 
 end
