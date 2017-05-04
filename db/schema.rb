@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 20170501131115) do
   end
 
   create_table "localities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "name"
     t.string "material"
     t.float  "amount",   limit: 24
     t.float  "long",     limit: 24

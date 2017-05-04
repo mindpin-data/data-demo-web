@@ -77,38 +77,18 @@ class LineChart extends Graph
       .y (d)=> @yscale d
       .curve(d3.curveCatmullRom.alpha(0.5))
 
-    arealine1 = d3.line()
-      .x (d, idx)=>
-        if idx == 0
-          @xscale 5
-        else if idx == 1
-          @xscale 0
-        else
-          @xscale idx - 2
-      .y (d, idx)=>
-        @yscale d
+    create_line = (data)=>
+      d3.line()
+        .x (d, idx)=>
+          if idx == 0
+            @xscale data.length - 1
+          else if idx == 1
+            @xscale 0
+          else
+            @xscale idx - 2
 
-    arealine2 = d3.line()
-      .x (d, idx)=>
-        if idx == 0
-          @xscale 11
-        else if idx == 1
-          @xscale 0
-        else
-          @xscale idx - 2
-      .y (d, idx)=>
-        @yscale d
-
-    arealine3 = d3.line()
-      .x (d, idx)=>
-        if idx == 0
-          @xscale 11
-        else if idx == 1
-          @xscale 0
-        else
-          @xscale idx - 2
-      .y (d, idx)=>
-        @yscale d
+        .y (d, idx)=>
+          @yscale d
 
     @panel.selectAll('path.pre-line').remove()
     @panel.selectAll('circle').remove()
@@ -152,9 +132,9 @@ class LineChart extends Graph
           .duration 1000
           .attr 'cy', @yscale data[idx]
 
-    _curve @data2, arealine3, @c3, 'url(#line-chart-linear3)'
-    _curve @data1, arealine2, @c2, 'url(#line-chart-linear2)'
-    _curve @data0, arealine1, @c1, 'url(#line-chart-linear1)'
+    _curve @data2, create_line(@data2), @c3, 'url(#line-chart-linear3)'
+    _curve @data1, create_line(@data1), @c2, 'url(#line-chart-linear2)'
+    _curve @data0, create_line(@data0), @c1, 'url(#line-chart-linear1)'
 
   draw_axis: ->
     axisx = @svg.append('g')

@@ -46,6 +46,7 @@ class AddTables < ActiveRecord::Migration[5.0]
     end
 
     create_table :localities do |t|
+      t.string :name
       t.string :material
       t.float :amount
       t.float :long
