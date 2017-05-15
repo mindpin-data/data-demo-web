@@ -124,7 +124,7 @@ class PathMap extends Graph
   _draw_warning: ->
     @scourges.forEach (s)=>
       [x, y] = @projection [s.long, s.lat]
-      new CityAnimate(@, x, y, '#ffffff', 8, "images/scourges/#{s.scourge}-0.png", "#{s.name}：近期#{s.scourge}").run()
+      new CityAnimate(@, x, y, '#ffffff', 8, "images/scourges/#{s.icon}-0.png", "#{s.name}：近期#{s.scourge}").run()
 
 
 class CityAnimate

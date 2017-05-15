@@ -9,8 +9,13 @@ class Scourge < ApplicationRecord
   end
 
   def self.data
+    data = JSON.parse self.all.to_json
+    data.each do |d|
+      d['icon'] = PinYin.of_string(d['scourge']).join
+    end
+
     {
-      scourges: self.all
+      scourges: data
     }
   end
 end

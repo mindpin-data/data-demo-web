@@ -43,7 +43,7 @@ class AreasBar extends Graph
 
     top = 0
     @scourges.forEach (x)=>
-      @draw_info @panel, "images/scourges/#{x.scourge}.png", x.name, "近期#{x.scourge}", x.date, top
+      @draw_info @panel, "images/scourges/#{x.icon}.png", x.name, "近期#{x.scourge}", x.date, top
       top += 40
 
   draw_info: (panel, img, city, weather, date, y = 0)->

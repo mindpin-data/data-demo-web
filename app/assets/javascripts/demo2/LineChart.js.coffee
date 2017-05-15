@@ -1,15 +1,17 @@
 class LineChart extends Graph
   prepare_data: ->
-    @idx = -1 if not @idx
-    @idx += 1
-    @idx = 0 if @idx == 3
-
     @materials = window.map_data.materials
-    current_product = @materials[@idx]
 
-    @data0 = current_product.now
-    @data1 = current_product.history
-    @data2 = current_product.guiding
+    @idx = -1 if not @idx?
+    @idx += 1
+    @idx = 0 if @idx == @materials.length
+
+    @current_product = @materials[@idx]
+
+    @locality_1 = {name: @current_product.locality_1, data: @current_product.locality_1_data}
+    @locality_2 = {name: @current_product.locality_2, data: @current_product.locality_2_data}
+    @locality_3 = {name: @current_product.locality_3, data: @current_product.locality_3_data}
+    @locality_4 = {name: @current_product.locality_4, data: @current_product.locality_4_data}
 
   draw: ->
     @prepare_data()
@@ -23,9 +25,11 @@ class LineChart extends Graph
     @c1 = 'rgb(137, 189, 27)'
     @c2 = 'rgb(6, 129, 200)'
     @c3 = 'rgb(217, 6, 8)'
+    @c4 = 'rgb(255, 222, 0)'
+    @colors = [@c1, @c2, @c3, @c4]
 
     @xscale = d3.scaleLinear()
-      .domain [0, 11]
+      .domain [0, 14]
       .range [0, @w]
 
     @yscale = d3.scaleLinear()
@@ -62,9 +66,10 @@ class LineChart extends Graph
     # https://www.w3cplus.com/svg/svg-linear-gradients.html
     @svg_defs = @svg.append('defs')
 
-    @make_def 205, 255, 65, 'line-chart-linear1'
-    @make_def 60, 180, 236, 'line-chart-linear2'
-    @make_def 217, 87, 87,  'line-chart-linear3'
+    @make_def 137, 189, 27, 'line-chart-linear1'
+    @make_def 6, 129, 200, 'line-chart-linear2'
+    @make_def 217, 6, 8,  'line-chart-linear3'
+    @make_def 255, 222, 0,  'line-chart-linear4'
 
 
   draw_lines: ->
@@ -93,48 +98,59 @@ class LineChart extends Graph
     @panel.selectAll('path.pre-line').remove()
     @panel.selectAll('circle').remove()
 
-    _curve = (data, arealine, color, fill)=>
-      _data = data.map (x)-> 0
 
-      area = @panel.append 'path'
-        .datum [0, 0].concat _data
-        .attr 'class', 'pre-line'
-        .attr 'd', arealine
-        .style 'fill', fill
+    cidx = 0
 
-      area.datum [0, 0].concat data
-        .transition()
-        .duration 1000
-        .attr 'd', arealine
+    _curve = (data)=>
+      if data? and data.length > 0
+        color = @colors[cidx]
+        fill = "url(#line-chart-linear#{cidx + 1})"
+        cidx += 1
 
-      curve = @panel.append 'path'
-        .datum _data
-        .attr 'class', 'pre-line'
-        .attr 'd', line1
-        .style 'stroke', color
-        .style 'fill', 'transparent'
-        .style 'stroke-width', 2
+        arealine = create_line(data)
 
-      curve.datum data
-        .transition()
-        .duration 1000
-        .attr 'd', line1
+        _data = data.map (x)-> 0
 
-      for d, idx in _data
-        circle = @panel.append 'circle'
-          .attr 'cx', @xscale idx
-          .attr 'cy', @yscale d
-          .attr 'r', 4
-          .attr 'fill', color
+        area = @panel.append 'path'
+          .datum [0, 0].concat _data
+          .attr 'class', 'pre-line'
+          .attr 'd', arealine
+          .style 'fill', fill
 
-        circle
+        area.datum [0, 0].concat data
           .transition()
           .duration 1000
-          .attr 'cy', @yscale data[idx]
+          .attr 'd', arealine
 
-    _curve @data2, create_line(@data2), @c3, 'url(#line-chart-linear3)'
-    _curve @data1, create_line(@data1), @c2, 'url(#line-chart-linear2)'
-    _curve @data0, create_line(@data0), @c1, 'url(#line-chart-linear1)'
+        curve = @panel.append 'path'
+          .datum _data
+          .attr 'class', 'pre-line'
+          .attr 'd', line1
+          .style 'stroke', color
+          .style 'fill', 'transparent'
+          .style 'stroke-width', 2
+
+        curve.datum data
+          .transition()
+          .duration 1000
+          .attr 'd', line1
+
+        for d, idx in _data
+          circle = @panel.append 'circle'
+            .attr 'cx', @xscale idx
+            .attr 'cy', @yscale d
+            .attr 'r', 4
+            .attr 'fill', color
+
+          circle
+            .transition()
+            .duration 1000
+            .attr 'cy', @yscale data[idx]
+
+    _curve @locality_1.data
+    _curve @locality_2.data
+    _curve @locality_3.data
+    _curve @locality_4.data
 
   draw_axis: ->
     axisx = @svg.append('g')
@@ -147,9 +163,9 @@ class LineChart extends Graph
 
     axisx.call(
       d3.axisBottom(@xscale)
-        .tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+        .tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
         .tickFormat (d, idx)->
-          return "#{idx + 1}月"
+          return "#{idx + 1}日"
     )
 
     axisy.call(
