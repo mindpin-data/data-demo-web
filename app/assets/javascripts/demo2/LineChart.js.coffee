@@ -8,10 +8,10 @@ class LineChart extends Graph
 
     @current_product = @materials[@idx]
 
-    @locality_1 = {name: @current_product.locality_1, data: @current_product.locality_1_data}
-    @locality_2 = {name: @current_product.locality_2, data: @current_product.locality_2_data}
-    @locality_3 = {name: @current_product.locality_3, data: @current_product.locality_3_data}
-    @locality_4 = {name: @current_product.locality_4, data: @current_product.locality_4_data}
+    @locality_1 = {name: @current_product.locality_1, data: @current_product.locality_1_data[0..11]}
+    @locality_2 = {name: @current_product.locality_2, data: @current_product.locality_2_data[0..11]}
+    @locality_3 = {name: @current_product.locality_3, data: @current_product.locality_3_data[0..11]}
+    @locality_4 = {name: @current_product.locality_4, data: @current_product.locality_4_data[0..11]}
 
   draw: ->
     @prepare_data()
@@ -29,7 +29,7 @@ class LineChart extends Graph
     @colors = [@c1, @c2, @c3, @c4]
 
     @xscale = d3.scaleLinear()
-      .domain [0, 14]
+      .domain [0, 11]
       .range [0, @w]
 
     @yscale = d3.scaleLinear()
@@ -163,9 +163,12 @@ class LineChart extends Graph
 
     axisx.call(
       d3.axisBottom(@xscale)
-        .tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+        .tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
         .tickFormat (d, idx)->
-          return "#{idx + 1}日"
+          m = (idx + 1 + new Date().getMonth() + 1)
+          m = m - 12 if m > 12
+
+          return "#{m}月"
     )
 
     axisy.call(

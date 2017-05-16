@@ -34,7 +34,7 @@ class PathMap extends Graph
 
   draw_next: ->
     @idx += 1
-    @idx = 0 if @idx == 3
+    @idx = 0 if @idx == @materials.length
     @current_product = @materials[@idx]
 
     @_draw_texts()

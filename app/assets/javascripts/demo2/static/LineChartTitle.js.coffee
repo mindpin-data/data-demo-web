@@ -41,7 +41,7 @@ class LineChartTitle extends Graph
       .attr 'x', 10
       .attr 'y', @height / 2 - 10
       .attr 'dy', '.33em'
-      .text "#{@current_product.name}采购价格趋势（单位：万元 / 吨）"
+      .text "#{@current_product.name}采购价格年度趋势（单位：万元 / 吨）"
       .style 'font-size', size + 'px'
       .style 'fill', '#ffffff'
 
@@ -77,39 +77,5 @@ class LineChartTitle extends Graph
     draw_locality @locality_3
     draw_locality @locality_4
 
-
-    # @texts
-    #   .append 'rect'
-    #   .attr 'x', 390 - 180
-    #   .attr 'y', @height / 2 - 7 + 30
-    #   .attr 'width', 30
-    #   .attr 'height', 15
-    #   .style 'fill', @c2
-
-    # @texts
-    #   .append 'text'
-    #   .attr 'x', 430 - 180
-    #   .attr 'y', @height / 2 + 30
-    #   .attr 'dy', '.33em'
-    #   .text '上一年同期价'
-    #   .style 'font-size', size + 'px'
-    #   .style 'fill', '#ffffff'
-
-    # @texts
-    #   .append 'rect'
-    #   .attr 'x', 390
-    #   .attr 'y', @height / 2 - 7 + 30
-    #   .attr 'width', 30
-    #   .attr 'height', 15
-    #   .style 'fill', @c3
-
-    # @texts
-    #   .append 'text'
-    #   .attr 'x', 430
-    #   .attr 'y', @height / 2 + 30
-    #   .attr 'dy', '.33em'
-    #   .text '政府指导价'
-    #   .style 'font-size', size + 'px'
-    #   .style 'fill', '#ffffff'
 
 BaseTile.register 'line-chart-title', LineChartTitle
