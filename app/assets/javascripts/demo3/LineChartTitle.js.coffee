@@ -26,7 +26,12 @@ class LineChartTitle extends Graph
     texts = @texts = @svg.append('g')
       .style 'transform', 'translate(1100px, 0px)'
 
-    scale = 2840 / 1920
+    scale = 1
+    left  = 200
+
+    if jQuery('.paper.large')[0]
+      scale = 2
+      left = 1600
 
     size = 40 * scale
     texts
@@ -84,7 +89,7 @@ class LineChartTitle extends Graph
 
 
     size = 20 * scale
-    left = 600 * scale
+    # left = 400 / scale
     topoff = 16 * scale
 
     texts

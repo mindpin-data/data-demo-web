@@ -22,9 +22,9 @@ window.BaseTile = class BaseTile
     $root = jQuery('body > .paper')
 
     if $root.hasClass('large')
-      [w, h] = [2840, 2400]
+      [w, h] = [3600, 1600]
     else
-      [w, h] = [1920, 1080] 
+      [w, h] = [1800, 800] 
 
     $root.css
       position: 'absolute'
