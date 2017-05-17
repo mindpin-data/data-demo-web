@@ -6,6 +6,7 @@ class AreasBar extends Graph
       b.total - a.total
     )[0..5]
 
+    @topmax = top[0].total
     @farr = top.map (x)-> x.code
     @amounts = top.map (x)-> x.total
     @names = top.map (x)-> x.name
@@ -46,7 +47,8 @@ class AreasBar extends Graph
 
     @flags = @svg.append('g')
 
-    max = 6424210
+    max = @topmax
+    # console.log(max)
 
     h = @height / 5
     w = @width * 0.8 - 100
