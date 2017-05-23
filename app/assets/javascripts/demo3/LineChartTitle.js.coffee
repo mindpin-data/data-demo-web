@@ -20,37 +20,37 @@ class LineChartTitle extends Graph
     #   @prepare_data()
     #   @draw_texts()
 
-    jQuery(document).on 'data-map:number-raise', (evt, is_china)=>
-      cn_count = window.map_data.cn_cities.length
-      world_count = window.map_data.world_cities.length
+    # jQuery(document).on 'data-map:number-raise', (evt, is_china)=>
+    #   cn_count = window.map_data.cn_cities.length
+    #   world_count = window.map_data.world_cities.length
 
-      total_change = (@total_data / 2 / (cn_count + world_count)) + Math.random() * 1000 - Math.random() * 1000
+    #   total_change = (@total_data / 2 / (cn_count + world_count)) + Math.random() * 1000 - Math.random() * 1000
       
-      if is_china
-        out_change = 0
-      else
-        out_change = (@export_data / 2 / world_count) + Math.random() * 1000 - Math.random() * 1000
+    #   if is_china
+    #     out_change = 0
+    #   else
+    #     out_change = (@export_data / 2 / world_count) + Math.random() * 1000 - Math.random() * 1000
 
 
-      old_total = ~~@total_text.text()
-      new_total = ~~(old_total + total_change) % @total_data
-      jQuery({n: old_total}).animate({n: new_total}
-        {
-          duration: 2000
-          step: (now)=>
-            @total_text.text ~~now
-        }
-      )
+    #   old_total = ~~@total_text.text()
+    #   new_total = ~~(old_total + total_change) % @total_data
+    #   jQuery({n: old_total}).animate({n: new_total}
+    #     {
+    #       duration: 2000
+    #       step: (now)=>
+    #         @total_text.text ~~now
+    #     }
+    #   )
 
-      old_out = ~~@out_text.text()
-      new_out = ~~(old_out + out_change) % @export_data
-      jQuery({n: old_out}).animate({n: new_out}
-        {
-          duration: 2000
-          step: (now)=>
-            @out_text.text ~~now
-        }
-      )
+    #   old_out = ~~@out_text.text()
+    #   new_out = ~~(old_out + out_change) % @export_data
+    #   jQuery({n: old_out}).animate({n: new_out}
+    #     {
+    #       duration: 2000
+    #       step: (now)=>
+    #         @out_text.text ~~now
+    #     }
+    #   )
 
 
 
@@ -83,7 +83,7 @@ class LineChartTitle extends Graph
       .attr 'x', -1050 + 270 * scale
       .attr 'y', @height / 2
       .attr 'dy', '.33em'
-      .text @total_data / 2
+      .text @total_data
       .style 'font-size', "#{size * 1.5}px"
       .style 'fill', @number_color
 
@@ -110,7 +110,7 @@ class LineChartTitle extends Graph
       .attr 'x', -1050 + (600 + 270) * scale
       .attr 'y', @height / 2
       .attr 'dy', '.33em'
-      .text @export_data / 2
+      .text @export_data
       .style 'font-size', "#{size * 1.5}px"
       .style 'fill', @number_color
 
