@@ -155,7 +155,7 @@ class MainMap extends Graph
     heatmapInstance = h337.create({
       # only container is required, the rest will be defaults
       container: jQuery('#heatmap')[0]
-      radius: 32
+      radius: 16
       gradient:
         '0.0': '#ffffff'
         '0.3': '#00ffff'
@@ -177,7 +177,7 @@ class MainMap extends Graph
       data: points
     }
 
-    console.log points
+    # console.log points
 
     heatmapInstance.setData(data)
 
@@ -335,7 +335,7 @@ class CityAnimate
       .attr 'fill', 'transparent'
       .attr 'transform', "translate(#{x}, #{y}) scale(#{scale})"
 
-    jQuery({ scale: 0.1, o: 1}).delay(delay).animate({ scale: 0.4, o: 0}
+    jQuery({ scale: 0.1, o: 1}).delay(delay).animate({ scale: 0.2, o: 0}
       {
         step: (now, fx)=>
           if fx.prop == 'scale'
