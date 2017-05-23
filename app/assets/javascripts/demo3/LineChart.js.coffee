@@ -30,7 +30,7 @@ class LineChart extends Graph
     @barscale = d3.scaleBand()
       .domain [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
       .range [0, @w]
-      .paddingInner 0.3333
+      .paddingInner 0.5
       .paddingOuter 0
 
     @draw_axis()
@@ -137,6 +137,10 @@ class LineChart extends Graph
           .attr 'cy', @yscale data[idx]
 
 
+    # _draw @data0, @c1, "url(#line-chart-linear1)"
+    _draw @data1, @c2, "url(#line-chart-linear2)" #, '5 5'
+    _draw @data2, @c3, "url(#line-chart-linear3)"
+
     # 绘制柱状图
 
     bar_width = @barscale.bandwidth()
@@ -146,17 +150,11 @@ class LineChart extends Graph
       .enter().append 'rect'
       .attr 'class', 'amount-bar'
       .attr 'width', bar_width
-      .attr 'fill', "url(#line-chart-linear1)"
+      .attr 'fill', 'rgba(0, 255, 24, 0.7)'
       .attr 'height', (d)=>
         @h - @yscale(d)
       .attr 'transform', (d, idx)=>
         "translate(#{@barscale(idx)}, #{@yscale d})"
-
-
-    # _draw @data0, @c1, "url(#line-chart-linear1)"
-    _draw @data1, @c2, "url(#line-chart-linear2)" #, '5 5'
-    _draw @data2, @c3, "url(#line-chart-linear3)"
-
 
 
 
@@ -186,7 +184,7 @@ class LineChart extends Graph
         .tickFormat (d, idx)->
           # return '10 亿' if d == 10
           return '0' if d == 0
-          return "#{d} 亿"
+          return "#{d}000 万"
 
     ).selectAll '.tick line'
       .attr 'x1', @w

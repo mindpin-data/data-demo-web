@@ -299,7 +299,7 @@ class MainMap extends Graph
       radius: 16
       gradient:
         '0.0': '#ffffff'
-        '0.3': '#00ffff'
+        '0.3': '#ffffff'
         '1.0': '#ffffff'
     })
 
@@ -328,7 +328,7 @@ class MainMap extends Graph
     # @_r @world_cities, '#f1c4ae'
     # @_r @world_cities, '#f1c4ae'
 
-    @_r @cn_cities, '#ff283b', true
+    # @_r @cn_cities, '#ff283b', true
     # @_r @cn_cities, '#ff283b', true
     @_r @world_cities, '#ff283b', false
     # @_r @world_cities, '#ff283b', false
@@ -339,11 +339,11 @@ class MainMap extends Graph
       # @_r @world_cities, '#f1c4ae'
       # @_r @world_cities, '#f1c4ae'
 
-      @_r @cn_cities, '#ff283b', true
+      # @_r @cn_cities, '#ff283b', true
       # @_r @cn_cities, '#ff283b', true
       @_r @world_cities, '#ff283b', false
       # @_r @world_cities, '#ff283b', false
-    , 2500
+    , 10000
 
   _r: (arr, color, is_china)->
     p = rand_item_of arr
