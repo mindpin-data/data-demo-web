@@ -131,11 +131,11 @@ class MainMap extends Graph
     heatmapInstance = h337.create({
       # only container is required, the rest will be defaults
       container: jQuery('#heatmap')[0]
-      radius: 20
+      radius: 32
       gradient:
-        '0.0': '#ff283b'
-        '0.3': '#ff283b'
-        '1.0': '#ff283b'
+        '0.0': '#ffffff'
+        '0.3': '#00ffff'
+        '1.0': '#ffffff'
     })
 
     cities = [].concat(@cn_cities).concat(@world_cities)
