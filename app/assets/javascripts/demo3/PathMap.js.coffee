@@ -279,7 +279,7 @@ class MainMap extends Graph
       .style 'stroke', @MAP_STROKE_COLOR
       .style 'stroke-width', 1
       .style 'fill', (d, idx)=>
-        return '#ff9279' if d.id == 'CHN'
+        return '#bd0000' if d.id == 'CHN'
         return '#e8aa31' if d.id == '-99'
 
         return '#cc7561' if codes.yazhou.indexOf(d.id) > -1
@@ -287,7 +287,7 @@ class MainMap extends Graph
         return '#e8aa31' if codes.feizhou.indexOf(d.id) > -1
         return '#d4e05a' if codes.nanmei.indexOf(d.id) > -1
         return '#bf79ff' if codes.aozhou.indexOf(d.id) > -1
-        return '#4f6ef1' if codes.beimei.indexOf(d.id) > -1
+        return '#8ee0a9' if codes.beimei.indexOf(d.id) > -1
         return '#ffffff' if codes.nanji.indexOf(d.id) > -1
         
 
