@@ -108,7 +108,7 @@ class LineChart extends Graph
         .attr 'd', line1
         .style 'stroke', color
         .style 'fill', 'transparent'
-        .style 'stroke-width', 6
+        .style 'stroke-width', 2
         .style 'stroke-dasharray', dasharray
         .style 'stroke-linecap', 'round'
 
@@ -122,7 +122,7 @@ class LineChart extends Graph
         c = @panel.append 'circle'
           .attr 'cx', @xscale idx
           .attr 'cy', @yscale d
-          .attr 'r', 10
+          .attr 'r', 3
           .attr 'fill', color
 
         c

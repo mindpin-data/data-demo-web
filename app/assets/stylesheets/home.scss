@@ -55,7 +55,7 @@ $text-color: rgba(white, 0.5);
 
 .axis.white {
   path.domain {
-    stroke-width: 3px;
+    // stroke-width: 3px;
   }
 
   path {
@@ -64,7 +64,7 @@ $text-color: rgba(white, 0.5);
 
   .tick line {
     stroke: #ffffff;
-    stroke-width: 3px;
+    // stroke-width: 3px;
   }
 
   .tick text {
