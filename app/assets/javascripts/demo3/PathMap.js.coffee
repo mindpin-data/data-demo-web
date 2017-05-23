@@ -343,7 +343,7 @@ class MainMap extends Graph
       # @_r @cn_cities, '#ff283b', true
       @_r @world_cities, '#ff283b', false
       # @_r @world_cities, '#ff283b', false
-    , 10000
+    , 20000
 
   _r: (arr, color, is_china)->
     p = rand_item_of arr
