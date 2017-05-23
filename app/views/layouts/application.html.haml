@@ -9,5 +9,5 @@
       - js = @demo
       - js = 'demo3' if js == 'demo4'
       = javascript_include_tag js, 'data-turbolinks-track': 'reload'
-  %body
+  %body{id: @demo}
     = yield

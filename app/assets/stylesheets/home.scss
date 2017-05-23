@@ -13,6 +13,10 @@ body {
   color: white;
 }
 
+body#demo3, body#demo4 {
+  background-color: #1983af;
+}
+
 a {color: white;}
 
 * { box-sizing: border-box; }
@@ -46,6 +50,26 @@ $text-color: rgba(white, 0.5);
     fill: $text-color;
     font-size: 16px;
     font-family: arial, '微软雅黑';
+  }
+}
+
+.axis.white {
+  path.domain {
+    stroke-width: 3px;
+  }
+
+  path {
+    stroke: #ffffff;
+  }
+
+  .tick line {
+    stroke: #ffffff;
+    stroke-width: 3px;
+  }
+
+  .tick text {
+    fill: #ffffff;
+    font-size: 30px;
   }
 }
 

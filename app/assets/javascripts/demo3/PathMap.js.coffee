@@ -70,6 +70,15 @@ class MainMap extends Graph
 
   _draw_map: ->
     @g_map.selectAll('.country').remove()
+
+    mfc = [
+      '#f8e8b7'
+      '#d6e7ba'
+      '#f9d8e9'
+      '#fbfb99'
+      '#e8ebfa'
+    ]
+
     countries = @g_map.selectAll('.country')
       .data @features
       .enter()
@@ -78,18 +87,55 @@ class MainMap extends Graph
       .attr 'd', @path
       .style 'stroke', @MAP_STROKE_COLOR
       .style 'stroke-width', 1
-      .style 'fill', @MAP_FILL_COLOR
+      .style 'fill', (d, idx)=>
+        # 橙
+        return '#f8e8b7' if d.id == 'RUS'
+        return '#f8e8b7' if d.id == 'TCD'
+        return '#f8e8b7' if d.id == 'BOL'
+
+        # 绿
+        return '#d6e7ba' if d.id == 'MEX'
+        return '#d6e7ba' if d.id == 'KAZ'
+        return '#d6e7ba' if d.id == 'BWA'
+        return '#d6e7ba' if d.id == 'SUR'
+        return '#d6e7ba' if d.id == 'UKR'
+        return '#d6e7ba' if d.id == 'MMR'
+        return '#d6e7ba' if d.id == 'JPN'
+
+        # 黄
+        return '#fbfb99' if d.id == 'CHL'
+        return '#fbfb99' if d.id == 'CAN'
+        return '#fbfb99' if d.id == 'MNG'
+        return '#fbfb99' if d.id == 'MLI'
+        return '#fbfb99' if d.id == 'TKM'
+        return '#fbfb99' if d.id == 'SAU'
+
+        # 红
+        return '#f9d8e9' if d.id == 'CHN'
+        return '#f9d8e9' if d.id == 'USA'
+        return '#f9d8e9' if d.id == 'BFA'
+        return '#f9d8e9' if d.id == 'HUN'
+        return '#f9d8e9' if d.id == 'ITA'
+
+        # 紫
+        return '#e8ebfa' if d.id == 'ZAF'
+        return '#e8ebfa' if d.id == 'GUY'
+        return '#e8ebfa' if d.id == 'TUN'
+        return '#e8ebfa' if d.id == 'IRN'
+        return '#e8ebfa' if d.id == 'BGR'
+        return '#e8ebfa' if d.id == 'THA'
+        mfc[idx % 5]
 
 
   draw_heatmap: ->
     heatmapInstance = h337.create({
       # only container is required, the rest will be defaults
       container: jQuery('#heatmap')[0]
-      radius: 16
+      radius: 20
       gradient:
-        '0.0': '#34cee9'
-        '0.3': '#34cee9'
-        '1.0': 'white'
+        '0.0': '#ff283b'
+        '0.3': '#ff283b'
+        '1.0': '#ff283b'
     })
 
     cities = [].concat(@cn_cities).concat(@world_cities)
@@ -112,26 +158,36 @@ class MainMap extends Graph
     heatmapInstance.setData(data)
 
   random_city: ->
-    @_r @cn_cities, '#cff1ae'
-    @_r @cn_cities, '#cff1ae'
-    @_r @world_cities, '#f1c4ae'
-    @_r @world_cities, '#f1c4ae'
+    # @_r @cn_cities, '#cff1ae'
+    # @_r @cn_cities, '#cff1ae'
+    # @_r @world_cities, '#f1c4ae'
+    # @_r @world_cities, '#f1c4ae'
+
+    @_r @cn_cities, '#ff283b', true
+    # @_r @cn_cities, '#ff283b', true
+    @_r @world_cities, '#ff283b', false
+    # @_r @world_cities, '#ff283b', false
 
     setTimeout =>
-      @_r @cn_cities, '#cff1ae'
-      @_r @cn_cities, '#cff1ae'
-      @_r @world_cities, '#f1c4ae'
-      @_r @world_cities, '#f1c4ae'
+      # @_r @cn_cities, '#cff1ae'
+      # @_r @cn_cities, '#cff1ae'
+      # @_r @world_cities, '#f1c4ae'
+      # @_r @world_cities, '#f1c4ae'
+
+      @_r @cn_cities, '#ff283b', true
+      # @_r @cn_cities, '#ff283b', true
+      @_r @world_cities, '#ff283b', false
+      # @_r @world_cities, '#ff283b', false
     , 2500
 
-  _r: (arr, color)->
+  _r: (arr, color, is_china)->
     p = rand_item_of arr
     [x, y] = @projection [p.long, p.lat]
-    new CityAnimate(this, x, y, color, 8).run()
+    new CityAnimate(this, x, y, color, 8, is_china).run()
 
 
 class CityAnimate
-  constructor: (@map, @x, @y, @color, @width)->
+  constructor: (@map, @x, @y, @color, @width, @is_china)->
     @g_map = @map.svg1
 
   run: ->
@@ -150,7 +206,7 @@ class CityAnimate
     @plane = @g_map.append 'path'
       .attr 'class', 'plane'
       .attr 'd', LOGO_PATH
-      .attr 'fill', 'white'
+      .attr 'fill', '#ff283b'
 
   # 画贵阳到收货地的航线
   draw_route: ->
@@ -191,6 +247,7 @@ class CityAnimate
         done: =>
           @route.remove()
           @three_paths_wave()
+          jQuery(document).trigger('data-map:number-raise', @is_china)
 
           jQuery({ o: 1 }).animate({ o: 0 }
             {
@@ -225,7 +282,7 @@ class CityAnimate
 
         duration: 2000
         easing: 'easeOutQuad'
-        done: ->
+        done: =>
           circle.remove()
       }
     )
@@ -250,7 +307,7 @@ class CityAnimate
     path = @g_map.append 'path'
       .attr 'd', LOGO_PATH
       .attr 'stroke', @color
-      .attr 'stroke-width', @width
+      .attr 'stroke-width', 20
       .attr 'fill', 'transparent'
       .attr 'transform', "translate(#{x}, #{y}) scale(#{scale})"
 
