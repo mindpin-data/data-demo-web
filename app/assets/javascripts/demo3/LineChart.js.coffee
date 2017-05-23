@@ -11,8 +11,8 @@ class LineChart extends Graph
     @svg = @draw_svg()
     @make_defs()
 
-    @h = @height - 60
-    @w = @width - 300
+    @h = @height - 70
+    @w = @width - 360
     @gap = (@w - 30) / 5
 
     @c1 = '#00ff18'
@@ -67,7 +67,7 @@ class LineChart extends Graph
     @panel.remove() if @panel?
 
     @panel = @svg.append('g')
-      .attr 'transform', "translate(250, 20)"
+      .attr 'transform', "translate(320, 20)"
 
     line1 = d3.line()
       .x (d, idx)=> @xscale idx
@@ -137,7 +137,7 @@ class LineChart extends Graph
 
 
   draw_axis: ->
-    offx = 250
+    offx = 320
     offy = 20
 
     axisx = @svg.append('g')
