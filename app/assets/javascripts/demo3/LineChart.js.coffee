@@ -12,7 +12,7 @@ class LineChart extends Graph
     @make_defs()
 
     @h = @height - 70
-    @w = @width - 360
+    @w = @width - 200
     @gap = (@w - 30) / 5
 
     @c1 = '#00ff18'
@@ -24,8 +24,14 @@ class LineChart extends Graph
       .range [0, @w]
 
     @yscale = d3.scaleLinear()
-      .domain [0, 100]
+      .domain [0, 10]
       .range [@h, 0]
+
+    @barscale = d3.scaleBand()
+      .domain [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+      .range [0, @w]
+      .paddingInner 0.3333
+      .paddingOuter 0
 
     @draw_axis()
     @draw_lines()
@@ -67,7 +73,7 @@ class LineChart extends Graph
     @panel.remove() if @panel?
 
     @panel = @svg.append('g')
-      .attr 'transform', "translate(320, 20)"
+      .attr 'transform', "translate(160, 20)"
 
     line1 = d3.line()
       .x (d, idx)=> @xscale idx
@@ -131,13 +137,32 @@ class LineChart extends Graph
           .attr 'cy', @yscale data[idx]
 
 
-    _draw @data0, @c1, "url(#line-chart-linear1)"
+    # 绘制柱状图
+
+    bar_width = @barscale.bandwidth()
+
+    @panel.selectAll '.amount-bar'
+      .data @data0
+      .enter().append 'rect'
+      .attr 'class', 'amount-bar'
+      .attr 'width', bar_width
+      .attr 'fill', "url(#line-chart-linear1)"
+      .attr 'height', (d)=>
+        @h - @yscale(d)
+      .attr 'transform', (d, idx)=>
+        "translate(#{@barscale(idx)}, #{@yscale d})"
+
+
+    # _draw @data0, @c1, "url(#line-chart-linear1)"
     _draw @data1, @c2, "url(#line-chart-linear2)" #, '5 5'
     _draw @data2, @c3, "url(#line-chart-linear3)"
 
 
+
+
+
   draw_axis: ->
-    offx = 320
+    offx = 160
     offy = 20
 
     axisx = @svg.append('g')
@@ -149,7 +174,7 @@ class LineChart extends Graph
       .attr 'transform', "translate(#{offx}, #{offy})"
 
     axisx.call(
-      d3.axisBottom(@xscale)
+      d3.axisBottom(@barscale)
         .tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
         .tickFormat (d, idx)->
           return "#{idx + 1}月"
@@ -157,11 +182,11 @@ class LineChart extends Graph
 
     axisy.call(
       d3.axisLeft(@yscale)
-        .tickValues([0, 20, 40, 60, 80, 100])
+        .tickValues([0, 2, 4, 6, 8, 10])
         .tickFormat (d, idx)->
-          return '1,000,000,000' if d == 100
+          # return '10 亿' if d == 10
           return '0' if d == 0
-          return "#{d}0,000,000"
+          return "#{d} 亿"
 
     ).selectAll '.tick line'
       .attr 'x1', @w

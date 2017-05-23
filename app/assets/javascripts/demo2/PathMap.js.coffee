@@ -149,7 +149,9 @@ class CityAnimate
       .attr 'dy', '.33em'
       .text @text
       .style 'font-size', size + 'px'
-      .style 'fill', '#f66'
+      .style 'fill', '#fff'
+      # .style 'font-weight', 'bold'
+      .style 'text-shadow', '0 0 3px rgba(0, 0, 0, 0.5)'
 
     @wave()
 

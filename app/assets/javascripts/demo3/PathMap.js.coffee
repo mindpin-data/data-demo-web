@@ -1,5 +1,204 @@
 LOGO_PATH = "M461.331,294.545c-11.119-34.221-56.452-50.278-102.081-36.623c-1.106-47.624-30.406-85.779-66.393-85.779c-35.987,0-65.286,38.155-66.393,85.779c-45.629-13.655-90.961,2.403-102.08,36.624c-11.12,34.226,16.114,73.882,61.065,89.65c-27.087,39.176-25.823,87.252,3.286,108.401c29.114,21.152,75.234,7.491,104.123-30.387c28.888,37.878,75.008,51.538,104.122,30.387c29.11-21.149,30.373-69.226,3.286-108.402C445.218,368.426,472.45,328.771,461.331,294.545z"
 
+codes = {
+  yazhou: [
+    "AFG"
+    "ARE"
+    "ARM"
+    "AZE"
+    "BGD"
+    "BRN"
+    "BTN"
+    "CHN"
+    "-99"
+    "GEO"
+    "YEM"
+    "IDN"
+    "IND"
+    "IRN"
+    "IRQ"
+    "ISR"
+    "JOR"
+    "JPN"
+    "KAZ"
+    "KGZ"
+    "KHM"
+    "KOR"
+    "KWT"
+    "LAO"
+    "LBN"
+    "LKA"
+    "MMR"
+    "MNG"
+    "MYS"
+    "NPL"
+    "OMN"
+    "PAK"
+    "PHL"
+    "PRK"
+    "QAT"
+    "SAU"
+    "SYR"
+    "THA"
+    "TJK"
+    "TKM"
+    "TLS"
+    "TUR"
+    "UZB"
+    "VNM"
+    "PSE"
+  ]
+
+  feizhou: [
+    "AGO"
+    "BDI"
+    "BEN"
+    "BFA"
+    "BWA"
+    "CAF"
+    "CIV"
+    "CMR"
+    "COD"
+    "COG"
+    "DJI"
+    "DZA"
+    "EGY"
+    "ERI"
+    "ZWE"
+    "ETH"
+    "GAB"
+    "GHA"
+    "GIN"
+    "GMB"
+    "GNB"
+    "GNQ"
+    "ZAF"
+    "ZMB"
+    "KEN"
+    "LBR"
+    "LBY"
+    "LSO"
+    "MAR"
+    "MDG"
+    "MLI"
+    "MOZ"
+    "MRT"
+    "MWI"
+    "NAM"
+    "NER"
+    "NGA"
+    "RWA"
+    "-99"
+    "SDN"
+    "SDS"
+    "SEN"
+    "SLE"
+    "-99"
+    "SOM"
+    "SWZ"
+    "TCD"
+    "TGO"
+    "TUN"
+    "TZA"
+    "UGA"
+  ]
+
+  ouzhou: [
+    "ALB"
+    "AUT"
+    "BEL"
+    "BGR"
+    "BIH"
+    "BLR"
+    "CHE"
+    "CYP"
+    "CZE"
+    "DEU"
+    "DNK"
+    "ESP"
+    "EST"
+    "FIN"
+    "FRA"
+    "GBR"
+    "GRC"
+    "HRV"
+    "HUN"
+    "IRL"
+    "ISL"
+    "ITA"
+    "-99"
+    "LTU"
+    "LUX"
+    "LVA"
+    "MDA"
+    "MKD"
+    "MNE"
+    "NLD"
+    "NOR"
+    "POL"
+    "PRT"
+    "ROU"
+    "RUS"
+    "SRB"
+    "SVK"
+    "SVN"
+    "SWE"
+    "UKR"
+  ]
+
+  nanmei: [
+    "ARG"
+    "BOL"
+    "BRA"
+    "CHL"
+    "COL"
+    "CUB"
+    "ECU"
+    "FLK"
+    "GUY"
+    "PAN"
+    "PER"
+    "PRY"
+    "SUR"
+    "URY"
+    "VEN"
+  ]
+
+  nanji: [
+    "ATA"
+    "ATF"
+  ]
+
+  aozhou: [
+    "AUS"
+    "FJI"
+    "NCL"
+    "NZL"
+    "PNG"
+    "SLB"
+    "VUT"
+  ]
+
+  beimei: [
+    "BHS"
+    "BLZ"
+    "CAN"
+    "CRI"
+    "DOM"
+    "GRL"
+    "GTM"
+    "HND"
+    "HTI"
+    "JAM"
+    "MEX"
+    "NIC"
+    "PRI"
+    "SLV"
+    "TTO"
+    "USA"
+  ]
+}
+
 
 # 循环执行
 floop = (func, duration)->
@@ -71,23 +270,6 @@ class MainMap extends Graph
   _draw_map: ->
     @g_map.selectAll('.country').remove()
 
-    mfc = [
-      # '#f8e8b7'
-      # '#d6e7ba'
-      # '#f9d8e9'
-      # '#fbfb99'
-      # '#e8ebfa'
-      '#c69a5d'
-      '#a5c18e'
-      '#c7b7b7'
-      '#dee47e'
-      '#b282b3'
-
-      '#5d875d'
-      '#568d85'
-      '#6789bb'
-    ]
-
     countries = @g_map.selectAll('.country')
       .data @features
       .enter()
@@ -97,58 +279,17 @@ class MainMap extends Graph
       .style 'stroke', @MAP_STROKE_COLOR
       .style 'stroke-width', 1
       .style 'fill', (d, idx)=>
-        # 橙
-        return mfc[0] if d.id == 'RUS'
-        return mfc[0] if d.id == 'TCD'
-        return mfc[0] if d.id == 'BOL'
-        return mfc[0] if d.id == 'MOZ'
-        return mfc[0] if d.id == 'BFA'
-        return mfc[6] if d.id == 'ETH'
-        return mfc[6] if d.id == 'UGA'
+        return '#ff9279' if d.id == 'CHN'
+        return '#e8aa31' if d.id == '-99'
 
-        # 绿
-        return mfc[1] if d.id == 'MEX'
-        return mfc[1] if d.id == 'KAZ'
-        return mfc[1] if d.id == 'BWA'
-        return mfc[1] if d.id == 'SUR'
-        return mfc[1] if d.id == 'UKR'
-        return mfc[3] if d.id == 'MMR'
-        return mfc[1] if d.id == 'JPN'
-        return mfc[1] if d.id == 'MRT'
-
-        # 红
-        return mfc[2] if d.id == 'CHN'
-        return mfc[2] if d.id == 'USA'
-        return mfc[2] if d.id == 'BFA'
-        return mfc[2] if d.id == 'HUN'
-        return mfc[2] if d.id == 'ITA'
-        return mfc[2] if d.id == 'AGO'
-
-        # 黄
-        return mfc[3] if d.id == 'CHL'
-        return mfc[3] if d.id == 'CAN'
-        return mfc[3] if d.id == 'MNG'
-        return mfc[3] if d.id == 'MLI'
-        return mfc[3] if d.id == 'TKM'
-        return mfc[3] if d.id == 'SAU'
-        return mfc[3] if d.id == 'LBY'
-        return mfc[3] if d.id == 'IDN'
-        return mfc[3] if d.id == 'ZMB'
-
-
-        # 紫
-        return mfc[4] if d.id == 'ZAF'
-        return mfc[4] if d.id == 'GUY'
-        return mfc[4] if d.id == 'TUN'
-        return mfc[4] if d.id == 'BGR'
-        return mfc[4] if d.id == 'THA'
-        return mfc[4] if d.id == 'CMR'
-
-        return mfc[5] if d.id == 'SDN'
-        return mfc[6] if d.id == 'IRN'
-
-        return mfc[7] if d.id == 'CAF'
-        mfc[idx % mfc.length]
+        return '#cc7561' if codes.yazhou.indexOf(d.id) > -1
+        return '#3e9bbc' if codes.ouzhou.indexOf(d.id) > -1
+        return '#e8aa31' if codes.feizhou.indexOf(d.id) > -1
+        return '#d4e05a' if codes.nanmei.indexOf(d.id) > -1
+        return '#bf79ff' if codes.aozhou.indexOf(d.id) > -1
+        return '#4f6ef1' if codes.beimei.indexOf(d.id) > -1
+        return '#ffffff' if codes.nanji.indexOf(d.id) > -1
+        
 
 
   draw_heatmap: ->
