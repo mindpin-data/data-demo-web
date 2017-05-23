@@ -36,7 +36,7 @@ class LineChartTitle extends Graph
       new_total = ~~(old_total + total_change) % @total_data
       jQuery({n: old_total}).animate({n: new_total}
         {
-          duration: 300
+          duration: 2000
           step: (now)=>
             @total_text.text ~~now
         }
@@ -46,7 +46,7 @@ class LineChartTitle extends Graph
       new_out = ~~(old_out + out_change) % @export_data
       jQuery({n: old_out}).animate({n: new_out}
         {
-          duration: 300
+          duration: 2000
           step: (now)=>
             @out_text.text ~~now
         }
@@ -173,7 +173,7 @@ class LineChartTitle extends Graph
       .attr 'x', left + 320 * scale
       .attr 'y', @height / 2 + topoff
       .attr 'dy', '.33em'
-      .text '上年同比销量'
+      .text '去年同比销量'
       .style 'font-size', "#{size}px"
       .style 'fill', '#ffffff'
 

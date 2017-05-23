@@ -235,7 +235,10 @@ class MainMap extends Graph
       @next_draw()
 
   next_draw: ->
-    @random_city()
+    @iidx = 0 if not @iidx?
+    @iidx += 1
+    if @iidx % 4 == 0
+      @random_city()
 
   load_data: ->
     d3.json 'data/world-countries.json?1', (error, _data)=>
@@ -333,17 +336,17 @@ class MainMap extends Graph
     @_r @world_cities, '#ff283b', false
     # @_r @world_cities, '#ff283b', false
 
-    setTimeout =>
-      # @_r @cn_cities, '#cff1ae'
-      # @_r @cn_cities, '#cff1ae'
-      # @_r @world_cities, '#f1c4ae'
-      # @_r @world_cities, '#f1c4ae'
+    # setTimeout =>
+    #   # @_r @cn_cities, '#cff1ae'
+    #   # @_r @cn_cities, '#cff1ae'
+    #   # @_r @world_cities, '#f1c4ae'
+    #   # @_r @world_cities, '#f1c4ae'
 
-      # @_r @cn_cities, '#ff283b', true
-      # @_r @cn_cities, '#ff283b', true
-      @_r @world_cities, '#ff283b', false
-      # @_r @world_cities, '#ff283b', false
-    , 20000
+    #   # @_r @cn_cities, '#ff283b', true
+    #   # @_r @cn_cities, '#ff283b', true
+    #   # @_r @world_cities, '#ff283b', false
+    #   # @_r @world_cities, '#ff283b', false
+    # , 20000
 
   _r: (arr, color, is_china)->
     p = rand_item_of arr
