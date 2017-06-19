@@ -11,8 +11,8 @@ class PathMap extends Graph
   draw: ->
     @prepare_data()
 
-    @MAP_STROKE_COLOR = '#021225'
-    @MAP_FILL_COLOR = '#273957'
+    @MAP_STROKE_COLOR = '#c8d8f1'
+    @MAP_FILL_COLOR = '#161f2e'
     # @MAP_FILL_COLOR = '#0f2438'
 
     @svg = @draw_svg()

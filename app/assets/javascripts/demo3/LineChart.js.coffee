@@ -16,8 +16,8 @@ class LineChart extends Graph
     @gap = (@w - 30) / 5
 
     @c1 = '#00ff18'
-    @c2 = '#fbfb99'
-    @c3 = '#ffac5a'
+    @c2 = '#21ed00'
+    @c3 = '#ffad00'
 
     @xscale = d3.scaleLinear()
       .domain [0, 11]
@@ -66,14 +66,30 @@ class LineChart extends Graph
     @svg_defs = @svg.append('defs')
 
     @make_def 0, 255, 24, 'line-chart-linear1'
-    @make_def 251, 251, 153, 'line-chart-linear2'
-    @make_def 255, 172, 90,  'line-chart-linear3'
+    @make_def 33, 237, 0, 'line-chart-linear2'
+    @make_def 255, 173, 0,  'line-chart-linear3'
 
   draw_lines: ->
     @panel.remove() if @panel?
 
     @panel = @svg.append('g')
       .attr 'transform', "translate(160, 20)"
+
+
+    # 绘制柱状图
+
+    bar_width = @barscale.bandwidth()
+
+    @panel.selectAll '.amount-bar'
+      .data @data0
+      .enter().append 'rect'
+      .attr 'class', 'amount-bar'
+      .attr 'width', bar_width
+      .attr 'fill', '#6a94dc'
+      .attr 'height', (d)=>
+        @h - @yscale(d)
+      .attr 'transform', (d, idx)=>
+        "translate(#{@barscale(idx)}, #{@yscale d})"
 
     line1 = d3.line()
       .x (d, idx)=> @xscale idx
@@ -99,6 +115,7 @@ class LineChart extends Graph
     _draw = (data, color, fill, dasharray)=>
       # _data = data.map (x)-> 0
       _data = data
+
 
       arealine = create_line(_data)
 
@@ -141,21 +158,6 @@ class LineChart extends Graph
     _draw @data1, @c2, "url(#line-chart-linear2)" #, '5 5'
     _draw @data2, @c3, "url(#line-chart-linear3)"
 
-    # 绘制柱状图
-
-    bar_width = @barscale.bandwidth()
-
-    @panel.selectAll '.amount-bar'
-      .data @data0
-      .enter().append 'rect'
-      .attr 'class', 'amount-bar'
-      .attr 'width', bar_width
-      .attr 'fill', 'rgba(0, 255, 24, 0.7)'
-      .attr 'height', (d)=>
-        @h - @yscale(d)
-      .attr 'transform', (d, idx)=>
-        "translate(#{@barscale(idx)}, #{@yscale d})"
-
 
 
 
@@ -175,7 +177,11 @@ class LineChart extends Graph
       d3.axisBottom(@barscale)
         .tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
         .tickFormat (d, idx)->
-          return "#{idx + 1}月"
+          arr = [
+            '一', '二', '三', '四', '五', '六'
+            '七', '八', '九', '十', '十一', '十二'
+          ]
+          return "#{arr[idx]}月"
     )
 
     axisy.call(

@@ -8,9 +8,9 @@ class LineChartTitle extends Graph
 
     @svg = @draw_svg()
 
-    @c1 = '#00ff18'
-    @c2 = '#fbfb99'
-    @c3 = '#ffac5a'
+    @c1 = '#6a94dc'
+    @c2 = '#21ed00'
+    @c3 = '#ffad00'
 
     @number_color = '#fcf926'
 
