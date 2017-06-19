@@ -76,26 +76,6 @@ class LineChart extends Graph
       .attr 'transform', "translate(160, 20)"
 
 
-    # 绘制柱状图
-
-    bar_width = @barscale.bandwidth()
-
-    @panel.selectAll '.amount-bar'
-      .data @data0
-      .enter().append 'rect'
-      .attr 'class', 'amount-bar'
-      .attr 'width', bar_width
-      .attr 'fill', '#6a94dc'
-      .attr 'height', (d)=>
-        @h - @yscale(d)
-      .attr 'transform', (d, idx)=>
-        "translate(#{@barscale(idx)}, #{@yscale d})"
-
-    line1 = d3.line()
-      .x (d, idx)=> @xscale idx
-      .y (d)=> @yscale d
-      .curve(d3.curveCatmullRom.alpha(0.5))
-
     create_line = (data)=>
       d3.line()
         .x (d, idx)=>
@@ -159,6 +139,26 @@ class LineChart extends Graph
     _draw @data2, @c3, "url(#line-chart-linear3)"
 
 
+    # 绘制柱状图
+
+    bar_width = @barscale.bandwidth()
+
+    @panel.selectAll '.amount-bar'
+      .data @data0
+      .enter().append 'rect'
+      .attr 'class', 'amount-bar'
+      .attr 'width', bar_width
+      .attr 'fill', '#6a94dc'
+      .attr 'height', (d)=>
+        @h - @yscale(d)
+      .attr 'transform', (d, idx)=>
+        "translate(#{@barscale(idx)}, #{@yscale d})"
+      .style 'opacity', '0.7'
+
+    line1 = d3.line()
+      .x (d, idx)=> @xscale idx
+      .y (d)=> @yscale d
+      .curve(d3.curveCatmullRom.alpha(0.5))
 
 
   draw_axis: ->
