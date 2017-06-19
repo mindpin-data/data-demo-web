@@ -155,7 +155,7 @@ class LineChart extends Graph
 
 
     # _draw @data0, @c1, "url(#line-chart-linear1)"
-    _draw @data1, @c2, "url(#line-chart-linear2)" #, '5 5'
+    _draw @data1, @c2, "url(#line-chart-linear2)" , '1 4'
     _draw @data2, @c3, "url(#line-chart-linear3)"
 
 

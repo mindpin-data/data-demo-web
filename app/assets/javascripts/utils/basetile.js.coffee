@@ -26,7 +26,7 @@ window.BaseTile = class BaseTile
     else if $root.hasClass('c900')
       [w, h] = [1800, 900]
     else
-      [w, h] = [1800, 800] 
+      [w, h] = [1700, 700] 
 
     $root.css
       position: 'absolute'
