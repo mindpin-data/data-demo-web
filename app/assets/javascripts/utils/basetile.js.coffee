@@ -23,8 +23,8 @@ window.BaseTile = class BaseTile
 
     if $root.hasClass('large')
       [w, h] = [3600, 1600]
-    else if $root.hasClass('c750')
-      [w, h] = [1800, 800]
+    else if $root.hasClass('c900')
+      [w, h] = [1800, 900]
     else
       [w, h] = [1800, 800] 
 

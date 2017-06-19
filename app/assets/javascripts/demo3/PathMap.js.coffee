@@ -259,14 +259,14 @@ class MainMap extends Graph
   draw_map: ->
     # http://s.4ye.me/ziMnfK
 
-    @map_scale = [0.10]
+    @map_scale = [0.125]
     # @projection = d3.geoMercator()
     # @projection = d3.geoEquirectangular()
 
     @projection = d3.geoProjection((x, y)=>
-      d3.geoEquirectangularRaw(x * 1.55, y)
+      d3.geoEquirectangularRaw(x * 1.17, y)
     )
-      .center [0, 15]
+      .center [0, 16]
       .scale @width * @map_scale
       .translate [@width / 2, @height / 2]
 
@@ -445,6 +445,7 @@ class CityAnimate
       .attr 'class', 'plane'
       .attr 'd', LOGO_PATH
       .attr 'fill', '#fcdc70'
+      .style 'display', 'none'
 
   # 画贵阳到收货地的航线
   draw_route: ->
