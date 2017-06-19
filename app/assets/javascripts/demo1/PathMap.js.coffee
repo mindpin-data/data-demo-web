@@ -86,16 +86,16 @@ class PathMap extends Graph
     @MAP_STROKE_COLOR = '#021225'
     
     # @MAP_FILL_COLOR = '#323c48'
-    @MAP_FILL_COLOR = '#323c48'
+    @MAP_FILL_COLOR = '#273957'
 
     # @MAP_FILL_COLOR_YDYL = '#455363'
-    @MAP_FILL_COLOR_YDYL = '#84a5ce'
+    @MAP_FILL_COLOR_YDYL = '#6a95dd'
 
     # @MAP_FILL_COLOR_CN = '#455363'
     @MAP_FILL_COLOR_CN = @MAP_FILL_COLOR_YDYL
 
     # @MAP_FILL_COLOR_CURRENT = '#2595AE'
-    @MAP_FILL_COLOR_CURRENT = '#ffd828'
+    @MAP_FILL_COLOR_CURRENT = '#ffae00'
 
     @svg = @draw_svg()
 

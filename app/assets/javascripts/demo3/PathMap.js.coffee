@@ -224,7 +224,7 @@ class MainMap extends Graph
   draw: ->
     @prepare_data()
 
-    @MAP_STROKE_COLOR = '#021225'
+    @MAP_STROKE_COLOR = '#c8d8f1'
     @MAP_FILL_COLOR = '#323c48'
 
     @svg = @draw_svg()
@@ -242,25 +242,31 @@ class MainMap extends Graph
 
   load_data: ->
     d3.json 'data/world-countries.json?1', (error, _data)=>
-      @features = _data.features
+      d3.json 'data/china.json?1', (error, _data_c)=>
+        @features = _data.features
+        @features_c = _data_c.features
 
-      @draw_map()
+        @draw_map()
 
-      @draw_heatmap()
-      @svg1 = @draw_svg()
-        .style 'position', 'absolute'
-        .style 'left', '0'
-        .style 'top', '0'
+        @draw_heatmap()
+        @svg1 = @draw_svg()
+          .style 'position', 'absolute'
+          .style 'left', '0'
+          .style 'top', '0'
 
-      @random_city()
+        @random_city()
 
   draw_map: ->
     # http://s.4ye.me/ziMnfK
 
-    @map_scale = 0.14
+    @map_scale = [0.10]
     # @projection = d3.geoMercator()
-    @projection = d3.geoEquirectangular()
-      .center [8, 8]
+    # @projection = d3.geoEquirectangular()
+
+    @projection = d3.geoProjection((x, y)=>
+      d3.geoEquirectangularRaw(x * 1.55, y)
+    )
+      .center [0, 15]
       .scale @width * @map_scale
       .translate [@width / 2, @height / 2]
 
@@ -268,7 +274,36 @@ class MainMap extends Graph
 
     @g_map = @svg.append 'g'
 
+    @make_def()
+    @_draw_shadow()
     @_draw_map()
+
+  make_def: ->
+    # https://www.w3cplus.com/svg/svg-linear-gradients.html
+    @svg_defs = @svg.append('defs')
+
+    lg = @svg_defs.append('filter')
+      .attr 'id', 'g_blur'
+
+    lg.append('feGaussianBlur')
+      .attr 'in', 'SourceGraphic'
+      .attr 'stdDeviation', 3
+
+
+  _draw_shadow: ->
+    @g_map.selectAll('.country-shadow').remove()
+
+    countries = @g_map.selectAll('.country-shadow')
+      .data @features
+      .enter()
+      .append 'path'
+      .attr 'class', 'country-shadow'
+      .attr 'd', @path
+      .style 'transform', 'translate(5px, 5px)'
+      .style 'stroke-width', 0
+      .style 'filter', 'url(#g_blur)'
+      .style 'fill', (d, idx)=>
+        return '#000000'
 
   _draw_map: ->
     @g_map.selectAll('.country').remove()
@@ -282,20 +317,55 @@ class MainMap extends Graph
       .style 'stroke', @MAP_STROKE_COLOR
       .style 'stroke-width', 1
       .style 'fill', (d, idx)=>
-        return '#bd0000' if d.id == 'CHN'
-        return '#e8aa31' if d.id == '-99'
+        return '#ffae00' if d.id == 'CHN'
+        return '#273957' if [
+          'CAN', 'SAU', 'PRT', 'CZE', 
+          'AUT', 'HUN', 'SRB', 'MDA',
+          'EST', 'TKM', 'BGD', 'KHM',
+          'TKM'
+        ].indexOf(d.id) > -1
 
-        return '#cc7561' if codes.yazhou.indexOf(d.id) > -1
-        return '#3e9bbc' if codes.ouzhou.indexOf(d.id) > -1
-        return '#e8aa31' if codes.feizhou.indexOf(d.id) > -1
-        return '#d4e05a' if codes.nanmei.indexOf(d.id) > -1
-        return '#bf79ff' if codes.aozhou.indexOf(d.id) > -1
-        return '#8ee0a9' if codes.beimei.indexOf(d.id) > -1
-        return '#ffffff' if codes.nanji.indexOf(d.id) > -1
-        
+        return '#21437d' if [
+          'ESP', 'MEX', 'BRA', 'ARG', 
+          'GUY', 'ITA', 'CHE', 'SWE',
+          'TUR', 'ROU', 'KAZ', 'UZB',
+          'LAO', 'MYS'
+        ].indexOf(d.id) > -1
+
+        return '#3a62a6' if [
+          'FRA', 'RUS', 'USA', 'PAK',
+          'NOR', 'FIN', 'POL', 'UKR',
+          'LTU', 'IDN', 'NLD'
+        ].indexOf(d.id) > -1
+
+        return '#6a95dd' if [
+          'DEU', 'IND', 'GBR', 'IRN'
+          'AUS', 'THA', 'MMR', 'VNM'
+          'PHL', 'NZL'
+        ].indexOf(d.id) > -1
+
+        return '#3c85ff' if [
+          'JPN', 'KOR'
+        ].indexOf(d.id) > -1
+
+        return '#a0bbe8'        
+
+    @g_map.selectAll('.country-c')
+      .data @features_c
+      .enter()
+      .append 'path'
+      .attr 'class', 'country-c'
+      .attr 'd', @path
+      .style 'stroke-width', 0
+      .style 'fill', (d, idx)=>
+        # console.log(d)
+        return '#ff4800' if d.properties.id == '52'
+        return 'transparent'
 
 
   draw_heatmap: ->
+    return false
+
     heatmapInstance = h337.create({
       # only container is required, the rest will be defaults
       container: jQuery('#heatmap')[0]
@@ -333,7 +403,7 @@ class MainMap extends Graph
 
     # @_r @cn_cities, '#ff283b', true
     # @_r @cn_cities, '#ff283b', true
-    @_r @world_cities, '#ff283b', false
+    @_r @world_cities, '#fcdc70', false
     # @_r @world_cities, '#ff283b', false
 
     # setTimeout =>
@@ -374,13 +444,33 @@ class CityAnimate
     @plane = @g_map.append 'path'
       .attr 'class', 'plane'
       .attr 'd', LOGO_PATH
-      .attr 'fill', '#ff283b'
+      .attr 'fill', '#fcdc70'
 
   # 画贵阳到收货地的航线
   draw_route: ->
+    xmid = (@gyx + @x) / 2
+    ymid = (@gyy + @y) / 2
+
+    dx = @gyx - @x
+    dy = @gyy - @y
+
+    s0 = Math.sqrt(dx * dx + dy * dy)
+    s1 = s0 / 4
+
+    alpha = Math.asin(dy / s0)
+
+    p0 = if @x > @gyx then 1 else -1
+    p1 = if @y > @gyy then -1 else 1
+
+    p = p0 * p1
+
+    x1 = xmid - Math.abs(s1 * Math.sin(alpha)) * p
+    y1 = ymid - Math.abs(s1 * Math.cos(alpha))
+
     @route = @g_map.append 'path'
-      .attr 'd', "M#{@gyx} #{@gyy} L#{@x} #{@y}"
+      .attr 'd', "M#{@gyx} #{@gyy} Q#{x1} #{y1} #{@x} #{@y}"
       .style 'stroke', 'transparent'
+      .style 'fill', 'transparent'
 
   # 飞行
   fly: ->
@@ -404,7 +494,7 @@ class CityAnimate
           p = path.getPointAtLength(now * l)
 
           count += 1
-          if count % 8 == 0
+          if count % 4 == 0
             @route_circle_wave(p.x, p.y)
           
           @plane
@@ -414,7 +504,7 @@ class CityAnimate
         easing: 'linear'
         done: =>
           @route.remove()
-          @three_paths_wave()
+          # @three_paths_wave()
           jQuery(document).trigger('data-map:number-raise', @is_china)
 
           jQuery({ o: 1 }).animate({ o: 0 }
@@ -436,11 +526,11 @@ class CityAnimate
       .attr 'cx', x
       .attr 'cy', y
       .attr 'stroke', @color
-      .attr 'stroke-width', @width
+      .attr 'stroke-width', 0
       # .attr 'fill', 'transparent'
       .attr 'fill', @color
 
-    jQuery({ r: 0, o: 0.9 }).delay(100).animate({ r: 5, o: 0 }
+    jQuery({ r: 5, o: 0.9 }).delay(100).animate({ r: 8, o: 0 }
       {
         step: (now, fx)->
           if fx.prop == 'r'

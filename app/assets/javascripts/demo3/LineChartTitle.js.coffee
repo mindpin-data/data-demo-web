@@ -12,7 +12,7 @@ class LineChartTitle extends Graph
     @c2 = '#fbfb99'
     @c3 = '#ffac5a'
 
-    @number_color = '#fbfb99'
+    @number_color = '#fcf926'
 
     @draw_texts()
 
