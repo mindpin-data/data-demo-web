@@ -16,9 +16,9 @@ class LineChartTitle extends Graph
 
     @draw_texts()
 
-    # jQuery(document).on 'data-map:next-draw', =>
-    #   @prepare_data()
-    #   @draw_texts()
+    jQuery(document).on 'data-map:next-draw', =>
+      @prepare_data()
+      @draw_texts()
 
     # jQuery(document).on 'data-map:number-raise', (evt, is_china)=>
     #   cn_count = window.map_data.cn_cities.length

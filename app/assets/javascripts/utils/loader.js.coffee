@@ -1,6 +1,6 @@
 jQuery ->
   # BaseTile.paper_init()
-  jQuery.get window.data_path
+  jQuery.get window.data_path + "?#{Math.random()}"
     .success (res)->
       window.map_data = res
       BaseTile.paper_init()
@@ -10,6 +10,6 @@ jQuery ->
       , 5 * 1000
 
       setInterval ->
-        jQuery.get window.data_path
+        jQuery.get window.data_path + "?#{Math.random()}"
           .success (res)-> window.map_data = res
       , 60 * 1000
