@@ -12,4 +12,4 @@ jQuery ->
       setInterval ->
         jQuery.get window.data_path + "?#{Math.random()}"
           .success (res)-> window.map_data = res
-      , 60 * 1000
+      , 10 * 1000

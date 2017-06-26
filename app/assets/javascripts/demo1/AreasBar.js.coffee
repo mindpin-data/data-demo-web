@@ -64,10 +64,10 @@ class AreasBar extends Graph
       .attr 'x', 0
       .attr 'y', h * idx + 30
 
-    offl = 90
+    offl = 80
 
     amount = amounts[idx]
-    bh = h - 40
+    bh = h - 30
     bw = w * (amount / max) + 80
 
     bar = flags
@@ -76,14 +76,14 @@ class AreasBar extends Graph
       .attr 'width', bw
       .attr 'height', bh
       .attr 'x', offl
-      .attr 'y', h * idx + 30 + 5
+      .attr 'y', h * idx + 30
 
     th = 24
     text = flags
       .append 'text'
       .attr 'fill', '#011224'
       .attr 'x', offl + 5
-      .attr 'y', h * idx + 30 + 5 + bh / 2
+      .attr 'y', h * idx + 30 + bh / 2
       .attr 'dy', '.33em'
       .style 'font-size', th + 'px'
       .text names[idx]
@@ -94,7 +94,7 @@ class AreasBar extends Graph
       .attr 'fill', '#011224'
       .attr 'text-anchor', 'end'
       .attr 'x', offl + bw - 5
-      .attr 'y', h * idx + 30 + 5 + bh / 2
+      .attr 'y', h * idx + 30 + bh / 2
       .attr 'dy', '.33em'
       .style 'font-size', th1 + 'px'
       .style 'font-weight', 'bold'

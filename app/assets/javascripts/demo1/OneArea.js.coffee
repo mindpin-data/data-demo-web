@@ -53,23 +53,23 @@ class OneArea extends Graph
 
     texts = @svg.append('g')
       .attr 'class', 'texts'
-      .style 'transform', 'translate(260px, 0px)'
+      .style 'transform', 'translate(210px, 0px)'
 
-    size = 40
+    size = 30
     texts
       .append 'text'
       .attr 'x', 0
-      .attr 'y', size / 2 + 10
+      .attr 'y', size / 2 + 20
       .attr 'dy', '.33em'
       .text "#{@AREA_DATA[@current_area].n}销量"
       .style 'font-size', size + 'px'
       .style 'fill', '#ffffff'
 
-    size1 = 50
+    size1 = 40
     number = texts
       .append 'text'
       .attr 'x', 0
-      .attr 'y', size / 2 + size + 40
+      .attr 'y', size / 2 + 20 + 50
       .attr 'dy', '.33em'
       .text 0
       .style 'font-size', size1 + 'px'
@@ -84,11 +84,11 @@ class OneArea extends Graph
     )
 
 
-    size2 = 40
+    size2 = 30
     percent = texts
       .append 'text'
       .attr 'x', 0
-      .attr 'y', size / 2 + size + 34 + size1 + 30
+      .attr 'y', size / 2 + 20 + 50 + 50
       .attr 'dy', '.33em'
       .text "同比 #{0.0}%"
       .style 'font-size', size2 + 'px'
@@ -107,8 +107,8 @@ class OneArea extends Graph
 
     texts
       .append 'image'
-      .attr 'x', 215
-      .attr 'y', size / 2 + size + 34 + size1 + 30 - size2 / 2
+      .attr 'x', 160
+      .attr 'y', size / 2 + 20 + 50 + 50 - 15
       .attr 'xlink:href', 'images/upicon1.png'
       .attr 'height', size2
       .attr 'width', size2

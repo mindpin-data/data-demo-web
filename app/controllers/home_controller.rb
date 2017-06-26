@@ -15,7 +15,9 @@ class HomeController < ApplicationController
   def data
     data = case params[:demo]
       when 'demo1'
-        DemoData.demo1
+        d = DemoData.demo1
+        # d[:countries][0][:total] = 3000000
+        # d
       when 'demo2'
         DemoData.demo2
       when 'demo3', 'demo4'
