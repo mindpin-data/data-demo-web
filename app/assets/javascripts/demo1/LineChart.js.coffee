@@ -27,7 +27,7 @@ class LineChart extends Graph
       .range [0, @w]
 
     @yscale = d3.scaleLinear()
-      .domain [0, 180]
+      .domain [0, 200]
       .range [@h, 0]
 
     @make_defs()
@@ -69,7 +69,7 @@ class LineChart extends Graph
   draw_lines: ->
     if not @panel?
       @panel = @svg.append('g')
-        .attr 'transform', "translate(40, 10)"
+        .attr 'transform', "translate(42, 10)"
 
     line1 = d3.line()
       .x (d, idx)=> @xscale idx
@@ -148,24 +148,24 @@ class LineChart extends Graph
 
   draw_axis: ->
     axisx = @svg.append('g')
-      .attr 'class', 'axis axis-x'
-      .attr 'transform', "translate(#{40}, #{10 + @h})"
+      .attr 'class', 'axis axis-x white1'
+      .attr 'transform', "translate(#{42}, #{10 + @h})"
 
     axisy = @svg.append('g')
-      .attr 'class', 'axis axis-y'
-      .attr 'transform', "translate(#{40}, #{10})"
+      .attr 'class', 'axis axis-y white1'
+      .attr 'transform', "translate(#{42}, #{10})"
 
     axisx.call(
       d3.axisBottom(@xscale)
         .tickValues([0, 1, 2, 3, 4, 5])
         .tickFormat (d, idx)-> 
           return '' if idx == 0
-          return "#{idx * 2}月"
+          return "#{idx * 2}"
     )
 
     axisy.call(
       d3.axisLeft(@yscale)
-        .tickValues([0, 30, 60, 90, 120, 150, 180])
+        .tickValues([0, 50, 100, 150, 200])
     ).selectAll '.tick line'
       .attr 'x1', @w
 

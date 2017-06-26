@@ -54,6 +54,17 @@ $text-color: rgba(white, 0.5);
   }
 }
 
+.axis.white1 {
+  .tick text {
+    fill: white;
+    font-size: 20px;
+  }
+
+  .tick line {
+    stroke: white;
+  }
+}
+
 .axis.white {
   path.domain {
     // stroke-width: 3px;

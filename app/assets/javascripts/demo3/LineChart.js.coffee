@@ -19,19 +19,21 @@ class LineChart extends Graph
     @c2 = '#21ed00'
     @c3 = '#ffad00'
 
-    @xscale = d3.scaleLinear()
-      .domain [0, 11]
-      .range [0, @w]
-
-    @yscale = d3.scaleLinear()
-      .domain [0, 10]
-      .range [@h, 0]
-
     @barscale = d3.scaleBand()
       .domain [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
       .range [0, @w]
       .paddingInner 0.5
       .paddingOuter 0
+
+    bar_width = @barscale.bandwidth()
+
+    @xscale = d3.scaleLinear()
+      .domain [0, 11]
+      .range [bar_width / 2, @w - bar_width / 2]
+
+    @yscale = d3.scaleLinear()
+      .domain [0, 10]
+      .range [@h, 0]
 
     @draw_axis()
     @draw_lines()
@@ -75,7 +77,6 @@ class LineChart extends Graph
     @panel = @svg.append('g')
       .attr 'transform', "translate(160, 20)"
 
-
     create_line = (data)=>
       d3.line()
         .x (d, idx)=>
@@ -92,10 +93,14 @@ class LineChart extends Graph
     @panel.selectAll('path.pre-line').remove()
     @panel.selectAll('circle').remove()
 
+    line1 = d3.line()
+      .x (d, idx)=> @xscale idx
+      .y (d)=> @yscale d
+      .curve(d3.curveCatmullRom.alpha(0.5))
+
     _draw = (data, color, fill, dasharray)=>
       # _data = data.map (x)-> 0
       _data = data
-
 
       arealine = create_line(_data)
 
@@ -115,11 +120,6 @@ class LineChart extends Graph
         .style 'stroke-dasharray', dasharray
         .style 'stroke-linecap', 'round'
 
-      # curve.datum data
-      #   .transition()
-      #   .duration 1000
-      #   .attr 'd', line1
-
 
       _data.forEach (d, idx)=>
         c = @panel.append 'circle'
@@ -138,9 +138,11 @@ class LineChart extends Graph
     _draw @data1, @c2, "url(#line-chart-linear2)" , '1 4'
     _draw @data2, @c3, "url(#line-chart-linear3)"
 
+    @draw_bars()
 
+
+  draw_bars: ->
     # 绘制柱状图
-
     bar_width = @barscale.bandwidth()
 
     @panel.selectAll '.amount-bar'
@@ -154,11 +156,6 @@ class LineChart extends Graph
       .attr 'transform', (d, idx)=>
         "translate(#{@barscale(idx)}, #{@yscale d})"
       .style 'opacity', '0.7'
-
-    line1 = d3.line()
-      .x (d, idx)=> @xscale idx
-      .y (d)=> @yscale d
-      .curve(d3.curveCatmullRom.alpha(0.5))
 
 
   draw_axis: ->

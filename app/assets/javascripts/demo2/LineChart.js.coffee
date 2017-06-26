@@ -75,7 +75,7 @@ class LineChart extends Graph
   draw_lines: ->
     @panel.remove() if @panel?
     @panel = @svg.append('g')
-      .attr 'transform', "translate(30, 10)"
+      .attr 'transform', "translate(32, 10)"
 
     line1 = d3.line()
       .x (d, idx)=> @xscale idx
@@ -154,12 +154,12 @@ class LineChart extends Graph
 
   draw_axis: ->
     axisx = @svg.append('g')
-      .attr 'class', 'axis axis-x'
-      .attr 'transform', "translate(#{30}, #{10 + @h})"
+      .attr 'class', 'axis axis-x white1'
+      .attr 'transform', "translate(#{32}, #{10 + @h})"
 
     axisy = @svg.append('g')
-      .attr 'class', 'axis axis-y'
-      .attr 'transform', "translate(#{30}, #{10})"
+      .attr 'class', 'axis axis-y white1'
+      .attr 'transform', "translate(#{32}, #{10})"
 
     axisx.call(
       d3.axisBottom(@xscale)
@@ -168,12 +168,12 @@ class LineChart extends Graph
           m = (idx + 1 + new Date().getMonth() + 1)
           m = m - 12 if m > 12
 
-          return "#{m}月"
+          return "#{m}"
     )
 
     axisy.call(
       d3.axisLeft(@yscale)
-        .tickValues([0, 10, 20, 30, 40, 50, 60, 70])
+        .tickValues([0, 20, 40, 60, 80])
     ).selectAll '.tick line'
       .attr 'x1', @w
 

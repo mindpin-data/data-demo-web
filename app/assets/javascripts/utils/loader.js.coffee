@@ -1,5 +1,7 @@
 jQuery ->
   # BaseTile.paper_init()
+  return if not window.data_path
+
   jQuery.get window.data_path + "?#{Math.random()}"
     .success (res)->
       window.map_data = res
