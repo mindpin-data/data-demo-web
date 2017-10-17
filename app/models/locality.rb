@@ -21,8 +21,13 @@ class Locality < ApplicationRecord
   end
 
   def self.data
+    data = JSON.parse self.all.to_json
+    data.each do |d|
+      d['long'] = d['lon'] if d['lon']
+    end
+
     {
-      localities: self.all
+      localities: data
     }
   end
 end
