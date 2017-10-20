@@ -1,0 +1,111 @@
+@charset "UTF-8";
+/* line 7, /Users/songliang/web/lgm/data-visual/app/assets/stylesheets/home.scss */
+body {
+  background-color: transparent;
+  padding: 0;
+  color: white;
+  font-size: 16px;
+  font-family: Arial, Helvetica, sans-serif, '微软雅黑';
+  color: white;
+}
+
+/* line 21, /Users/songliang/web/lgm/data-visual/app/assets/stylesheets/home.scss */
+a {
+  color: white;
+}
+
+/* line 23, /Users/songliang/web/lgm/data-visual/app/assets/stylesheets/home.scss */
+* {
+  box-sizing: border-box;
+}
+
+/* line 29, /Users/songliang/web/lgm/data-visual/app/assets/stylesheets/home.scss */
+.tile {
+  background-color: rgba(255, 255, 255, 0.1);
+  position: absolute;
+}
+
+/* line 33, /Users/songliang/web/lgm/data-visual/app/assets/stylesheets/home.scss */
+.tile:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* line 37, /Users/songliang/web/lgm/data-visual/app/assets/stylesheets/home.scss */
+.tile.nbg {
+  background-color: transparent;
+}
+
+/* line 43, /Users/songliang/web/lgm/data-visual/app/assets/stylesheets/home.scss */
+.axis path {
+  stroke: rgba(255, 255, 255, 0.5);
+}
+/* line 47, /Users/songliang/web/lgm/data-visual/app/assets/stylesheets/home.scss */
+.axis .tick line {
+  stroke: rgba(255, 255, 255, 0.5);
+}
+/* line 50, /Users/songliang/web/lgm/data-visual/app/assets/stylesheets/home.scss */
+.axis .tick text {
+  fill: rgba(255, 255, 255, 0.5);
+  font-size: 16px;
+  font-family: arial, '微软雅黑';
+}
+
+/* line 58, /Users/songliang/web/lgm/data-visual/app/assets/stylesheets/home.scss */
+.axis.white1 .tick text {
+  fill: white;
+  font-size: 20px;
+}
+/* line 63, /Users/songliang/web/lgm/data-visual/app/assets/stylesheets/home.scss */
+.axis.white1 .tick line {
+  stroke: white;
+}
+
+/* line 73, /Users/songliang/web/lgm/data-visual/app/assets/stylesheets/home.scss */
+.axis.white path {
+  stroke: #ffffff;
+}
+/* line 77, /Users/songliang/web/lgm/data-visual/app/assets/stylesheets/home.scss */
+.axis.white .tick line {
+  stroke: #ffffff;
+}
+/* line 82, /Users/songliang/web/lgm/data-visual/app/assets/stylesheets/home.scss */
+.axis.white .tick text {
+  fill: #ffffff;
+  font-size: 24px;
+}
+
+/* line 88, /Users/songliang/web/lgm/data-visual/app/assets/stylesheets/home.scss */
+g text {
+  font-family: arial, '微软雅黑';
+}
+
+@keyframes mpp {
+  to {
+    transform: translate(-30px, -75px);
+  }
+  from {
+    transform: translate(-30px, -50px);
+  }
+}
+/* line 101, /Users/songliang/web/lgm/data-visual/app/assets/stylesheets/home.scss */
+image.map-point {
+  animation-name: mpp;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+
+
+ */
+
