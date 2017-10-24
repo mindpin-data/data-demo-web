@@ -128,12 +128,6 @@ class PathMap extends Graph
       # 第三层，当前展示国家节点
       @draw_current_city()
 
-      # 定时刷新
-      setTimeout =>
-        console.log('refresh')
-        window.location.href = window.location.href
-      , 1000 * 60 * 5
-
   init: ->
     # http://s.4ye.me/ziMnfK
     @projection = d3.geoMercator()

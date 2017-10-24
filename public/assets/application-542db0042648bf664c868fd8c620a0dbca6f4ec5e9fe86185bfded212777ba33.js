@@ -11881,11 +11881,16 @@ jQuery.extend( jQuery.easing,
       setInterval(function() {
         return jQuery(document).trigger('data-map:next-draw');
       }, 5 * 1000);
-      return setInterval(function() {
+      setInterval(function() {
         return jQuery.get(window.data_path + ("?" + (Math.random()))).success(function(res) {
           return window.map_data = res;
         });
       }, 10 * 1000);
+      return setTimeout((function(_this) {
+        return function() {
+          return window.location.href = window.location.href;
+        };
+      })(this), 1000 * 60 * 5);
     });
   });
 

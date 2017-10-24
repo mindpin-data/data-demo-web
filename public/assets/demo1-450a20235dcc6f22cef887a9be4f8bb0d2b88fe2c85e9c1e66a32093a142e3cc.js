@@ -527,11 +527,7 @@
           _this.draw_map();
           _this.draw_cities();
           _this.draw_ydyl_curve();
-          _this.draw_current_city();
-          return setTimeout(function() {
-            console.log('refresh');
-            return window.location.href = window.location.href;
-          }, 1000 * 60 * 5);
+          return _this.draw_current_city();
         };
       })(this));
     };
