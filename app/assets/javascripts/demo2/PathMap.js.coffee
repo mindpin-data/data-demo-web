@@ -1,3 +1,5 @@
+# 原料产地：地图
+
 class PathMap extends Graph
   prepare_data: ->
     @localities = window.map_data.localities
@@ -159,9 +161,9 @@ class CityAnimate
   # 在指定的位置用指定的颜色显示三个依次扩散的光圈
   wave: ->
     @circle_wave(0)
-    @timer = setInterval =>
-      @circle_wave(0)
-    , 500
+    @timer = setTimeout =>
+      @wave()
+    , 1500
 
   stop: ->
     clearInterval @timer
@@ -185,7 +187,7 @@ class CityAnimate
           if fx.prop == 'w'
             circle.attr 'stroke-width', now
 
-        duration: 2000
+        duration: 3000
         easing: 'easeOutQuad'
         done: ->
           circle.remove()

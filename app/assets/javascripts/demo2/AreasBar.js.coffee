@@ -1,3 +1,5 @@
+# 原料产地：预警窗口
+
 class AreasBar extends Graph
   prepare_data: ->
     @scourges = window.map_data.scourges

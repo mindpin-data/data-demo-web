@@ -1,8 +1,11 @@
+# 原料产地：作物图标，目前未启用
+
 class Material extends Graph
   prepare_data: ->
     @materials = window.map_data.materials
 
   draw: ->
+    console.log(1111111111)
     @prepare_data()
 
     @svg = @draw_svg()
@@ -23,11 +26,12 @@ class Material extends Graph
     @draw_texts()
 
   draw_icon: ->
-    @svg.select('g.flag').remove()
-    flag = @svg.append('g')
+    @flag.remove() if @flag?
+
+    @flag = @svg.append('g')
       .attr 'class', 'flag'
 
-    flag
+    @flag
       .append 'circle'
       .attr 'r', @height / 4
       .attr 'cx', 80
@@ -35,7 +39,7 @@ class Material extends Graph
       .attr 'fill', @current_product.color
       .style 'opacity', '0.5'
 
-    flag
+    @flag
       .append 'image'
       .attr 'xlink:href', "images/materials/#{@current_product.name}.png"
       .attr 'height', @height / 6 * 2

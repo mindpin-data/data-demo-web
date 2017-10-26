@@ -199,14 +199,6 @@ codes = {
   ]
 }
 
-
-# 循环执行
-floop = (func, duration)->
-  func()
-  setInterval ->
-    func()
-  , duration
-
 # 从数组中随机取一项
 rand_item_of = (arr)->
   arr[Math.floor(arr.length * Math.random())]
@@ -248,12 +240,7 @@ class MainMap extends Graph
 
         @draw_map()
 
-        @draw_heatmap()
-        @svg1 = @draw_svg()
-          .style 'position', 'absolute'
-          .style 'left', '0'
-          .style 'top', '0'
-
+        # @draw_heatmap()
         @random_city()
 
   draw_map: ->
@@ -396,6 +383,12 @@ class MainMap extends Graph
     heatmapInstance.setData(data)
 
   random_city: ->
+    @svg1.remove() if @svg1?
+    @svg1 = @draw_svg()
+      .style 'position', 'absolute'
+      .style 'left', '0'
+      .style 'top', '0'
+
     # @_r @cn_cities, '#cff1ae'
     # @_r @cn_cities, '#cff1ae'
     # @_r @world_cities, '#f1c4ae'
@@ -441,11 +434,12 @@ class CityAnimate
 
   # 在贵阳画一个小飞机
   draw_plane: ->
-    @plane = @g_map.append 'path'
-      .attr 'class', 'plane'
-      .attr 'd', LOGO_PATH
-      .attr 'fill', '#fcdc70'
-      .style 'display', 'none'
+    # 先不画飞机了
+    # @plane = @g_map.append 'path'
+    #   .attr 'class', 'plane'
+    #   .attr 'd', LOGO_PATH
+    #   .attr 'fill', '#fcdc70'
+    #   .style 'display', 'none'
 
   # 画贵阳到收货地的航线
   draw_route: ->
@@ -470,7 +464,7 @@ class CityAnimate
 
     @route = @g_map.append 'path'
       .attr 'd', "M#{@gyx} #{@gyy} Q#{x1} #{y1} #{@x} #{@y}"
-      .style 'stroke', 'transparent'
+      .style 'stroke', 'rgba(255, 255, 255, 0.1)'
       .style 'fill', 'transparent'
 
   # 飞行
@@ -489,35 +483,40 @@ class CityAnimate
     yoff = center_yoff * scale * 0.5
 
     count = 0
+
+    last_len = 0
     jQuery({ t: 0 }).animate({ t: 1 }
       {
         step: (now, fx)=>
-          p = path.getPointAtLength(now * l)
+          len = now * l
+          p = path.getPointAtLength(len)
 
-          count += 1
-          if count % 4 == 0
+          # count += 1
+          # if count % 4 == 0
+          if len - last_len > 6
             @route_circle_wave(p.x, p.y)
+            last_len = len
           
-          @plane
-            .attr 'transform', "translate(#{p.x - xoff}, #{p.y - yoff}) scale(#{scale})"
+          # @plane
+          #   .attr 'transform', "translate(#{p.x - xoff}, #{p.y - yoff}) scale(#{scale})"
 
         duration: Math.sqrt(l) * 150
         easing: 'linear'
         done: =>
           @route.remove()
           # @three_paths_wave()
-          jQuery(document).trigger('data-map:number-raise', @is_china)
+          # jQuery(document).trigger('data-map:number-raise', @is_china)
 
-          jQuery({ o: 1 }).animate({ o: 0 }
-            {
-              step: (now, fx)=>
-                @plane
-                  .style 'opacity', now
-              duration: 1000
-              done: =>
-                @plane.remove()
-            }
-          )
+          # jQuery({ o: 1 }).animate({ o: 0 }
+          #   {
+          #     step: (now, fx)=>
+          #       @plane
+          #         .style 'opacity', now
+          #     duration: 1500
+          #     done: =>
+          #       @plane.remove()
+          #   }
+          # )
       }
     )
 
@@ -531,7 +530,7 @@ class CityAnimate
       # .attr 'fill', 'transparent'
       .attr 'fill', @color
 
-    jQuery({ r: 5, o: 0.9 }).delay(100).animate({ r: 8, o: 0 }
+    jQuery({ r: 8, o: 0.9 }).delay(100).animate({ r: 4, o: 0 }
       {
         step: (now, fx)->
           if fx.prop == 'r'
@@ -539,7 +538,7 @@ class CityAnimate
           if fx.prop == 'o'
             circle.style 'opacity', now
 
-        duration: 2000
+        duration: 1500
         easing: 'easeOutQuad'
         done: =>
           circle.remove()

@@ -1,3 +1,5 @@
+# 全球销量，折线图，无动画
+
 class LineChart extends Graph
   prepare_data: ->
     @data0 = window.map_data.now

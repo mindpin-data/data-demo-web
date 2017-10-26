@@ -1,3 +1,5 @@
+# 原料产地：折线图
+
 class LineChart extends Graph
   prepare_data: ->
     @materials = window.map_data.materials
@@ -72,85 +74,90 @@ class LineChart extends Graph
     @make_def 255, 222, 0,  'line-chart-linear4'
 
 
+
+  _create_line: (data)=>
+    d3.line()
+      .x (d, idx)=>
+        if idx == 0
+          @xscale data.length - 1
+        else if idx == 1
+          @xscale 0
+        else
+          @xscale idx - 2
+
+      .y (d, idx)=>
+        @yscale d
+
+
   draw_lines: ->
     @panel.remove() if @panel?
     @panel = @svg.append('g')
       .attr 'transform', "translate(32, 10)"
 
-    line1 = d3.line()
+    @line1 = d3.line()
       .x (d, idx)=> @xscale idx
       .y (d)=> @yscale d
       .curve(d3.curveCatmullRom.alpha(0.5))
-
-    create_line = (data)=>
-      d3.line()
-        .x (d, idx)=>
-          if idx == 0
-            @xscale data.length - 1
-          else if idx == 1
-            @xscale 0
-          else
-            @xscale idx - 2
-
-        .y (d, idx)=>
-          @yscale d
 
     @panel.selectAll('path.pre-line').remove()
     @panel.selectAll('circle').remove()
 
 
-    cidx = 0
+    @cidx = 0
 
-    _curve = (data)=>
-      if data? and data.length > 0
-        color = @colors[cidx]
-        fill = "url(#line-chart-linear#{cidx + 1})"
-        cidx += 1
+    @_curve @locality_1.data
+    @_curve @locality_2.data
+    @_curve @locality_3.data
+    @_curve @locality_4.data
 
-        arealine = create_line(data)
 
-        _data = data.map (x)-> 0
+  _curve: (data)=>
+    if data? and data.length > 0
+      color = @colors[@cidx]
+      fill = "url(#line-chart-linear#{@cidx + 1})"
+      @cidx += 1
 
-        area = @panel.append 'path'
-          .datum [0, 0].concat _data
-          .attr 'class', 'pre-line'
-          .attr 'd', arealine
-          .style 'fill', fill
+      arealine = @_create_line(data)
 
-        area.datum [0, 0].concat data
+      _data = data.map (x)-> 0
+
+      @panel.append 'path'
+        .datum [0, 0].concat _data
+        .attr 'class', 'pre-line'
+        .attr 'd', arealine
+        .style 'fill', fill
+
+        .datum [0, 0].concat data
+        .transition()
+        .duration 1000
+        .attr 'd', arealine
+
+
+      @panel.append 'path'
+        .datum _data
+        .attr 'class', 'pre-line'
+        .attr 'd', @line1
+        .style 'stroke', color
+        .style 'fill', 'transparent'
+        .style 'stroke-width', 2
+
+        .datum data
+        .transition()
+        .duration 1000
+        .attr 'd', @line1
+
+      for d, idx in _data
+        @panel.append 'circle'
+          .attr 'cx', @xscale idx
+          .attr 'cy', @yscale d
+          .attr 'r', 4
+          .attr 'fill', color
+
           .transition()
           .duration 1000
-          .attr 'd', arealine
+          .attr 'cy', @yscale data[idx]
 
-        curve = @panel.append 'path'
-          .datum _data
-          .attr 'class', 'pre-line'
-          .attr 'd', line1
-          .style 'stroke', color
-          .style 'fill', 'transparent'
-          .style 'stroke-width', 2
 
-        curve.datum data
-          .transition()
-          .duration 1000
-          .attr 'd', line1
-
-        for d, idx in _data
-          circle = @panel.append 'circle'
-            .attr 'cx', @xscale idx
-            .attr 'cy', @yscale d
-            .attr 'r', 4
-            .attr 'fill', color
-
-          circle
-            .transition()
-            .duration 1000
-            .attr 'cy', @yscale data[idx]
-
-    _curve @locality_1.data
-    _curve @locality_2.data
-    _curve @locality_3.data
-    _curve @locality_4.data
 
   draw_axis: ->
     axisx = @svg.append('g')
