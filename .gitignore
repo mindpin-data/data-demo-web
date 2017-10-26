@@ -9,12 +9,12 @@
 
 # Ignore all logfiles and tempfiles.
 /log/*
-/tmp/*
+
 !/log/.keep
 !/tmp/.keep
 
-!/log/pids/.keep
-!/log/sockets/.keep
+!/tmp/pids/.keep
+!/tmp/sockets/.keep
 
 # Ignore Byebug command history file.
 .byebug_history
