@@ -215,7 +215,7 @@
 
 }).call(this);
 (function() {
-  var CityAnimate, LOGO_PATH, MainMap, codes, floop, rand_item_of,
+  var CityAnimate, LOGO_PATH, MainMap, codes, rand_item_of,
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
@@ -229,13 +229,6 @@
     nanji: ["ATA", "ATF"],
     aozhou: ["AUS", "FJI", "NCL", "NZL", "PNG", "SLB", "VUT"],
     beimei: ["BHS", "BLZ", "CAN", "CRI", "DOM", "GRL", "GTM", "HND", "HTI", "JAM", "MEX", "NIC", "PRI", "SLV", "TTO", "USA"]
-  };
-
-  floop = function(func, duration) {
-    func();
-    return setInterval(function() {
-      return func();
-    }, duration);
   };
 
   rand_item_of = function(arr) {
@@ -291,8 +284,6 @@
             _this.features = _data.features;
             _this.features_c = _data_c.features;
             _this.draw_map();
-            _this.draw_heatmap();
-            _this.svg1 = _this.draw_svg().style('position', 'absolute').style('left', '0').style('top', '0');
             return _this.random_city();
           });
         };
@@ -398,6 +389,10 @@
     };
 
     MainMap.prototype.random_city = function() {
+      if (this.svg1 != null) {
+        this.svg1.remove();
+      }
+      this.svg1 = this.draw_svg().style('position', 'absolute').style('left', '0').style('top', '0');
       return this._r(this.world_cities, '#fcdc70', false);
     };
 
@@ -435,9 +430,7 @@
       return this.fly();
     };
 
-    CityAnimate.prototype.draw_plane = function() {
-      return this.plane = this.g_map.append('path').attr('class', 'plane').attr('d', LOGO_PATH).attr('fill', '#fcdc70').style('display', 'none');
-    };
+    CityAnimate.prototype.draw_plane = function() {};
 
     CityAnimate.prototype.draw_route = function() {
       var alpha, dx, dy, p, p0, p1, s0, s1, x1, xmid, y1, ymid;
@@ -453,11 +446,11 @@
       p = p0 * p1;
       x1 = xmid - Math.abs(s1 * Math.sin(alpha)) * p;
       y1 = ymid - Math.abs(s1 * Math.cos(alpha));
-      return this.route = this.g_map.append('path').attr('d', "M" + this.gyx + " " + this.gyy + " Q" + x1 + " " + y1 + " " + this.x + " " + this.y).style('stroke', 'transparent').style('fill', 'transparent');
+      return this.route = this.g_map.append('path').attr('d', "M" + this.gyx + " " + this.gyy + " Q" + x1 + " " + y1 + " " + this.x + " " + this.y).style('stroke', 'rgba(255, 255, 255, 0.1)').style('fill', 'transparent');
     };
 
     CityAnimate.prototype.fly = function() {
-      var center_xoff, center_yoff, count, dx, dy, l, path, scale, xoff, yoff;
+      var center_xoff, center_yoff, count, dx, dy, l, last_len, path, scale, xoff, yoff;
       path = this.route.node();
       l = path.getTotalLength();
       dx = this.x - this.gyx;
@@ -468,6 +461,7 @@
       xoff = center_xoff * scale * 0.5;
       yoff = center_yoff * scale * 0.5;
       count = 0;
+      last_len = 0;
       return jQuery({
         t: 0
       }).animate({
@@ -475,34 +469,20 @@
       }, {
         step: (function(_this) {
           return function(now, fx) {
-            var p;
-            p = path.getPointAtLength(now * l);
-            count += 1;
-            if (count % 4 === 0) {
+            var len, p;
+            len = now * l;
+            p = path.getPointAtLength(len);
+            if (len - last_len > 6) {
               _this.route_circle_wave(p.x, p.y);
+              return last_len = len;
             }
-            return _this.plane.attr('transform', "translate(" + (p.x - xoff) + ", " + (p.y - yoff) + ") scale(" + scale + ")");
           };
         })(this),
         duration: Math.sqrt(l) * 150,
         easing: 'linear',
         done: (function(_this) {
           return function() {
-            _this.route.remove();
-            jQuery(document).trigger('data-map:number-raise', _this.is_china);
-            return jQuery({
-              o: 1
-            }).animate({
-              o: 0
-            }, {
-              step: function(now, fx) {
-                return _this.plane.style('opacity', now);
-              },
-              duration: 1000,
-              done: function() {
-                return _this.plane.remove();
-              }
-            });
+            return _this.route.remove();
           };
         })(this)
       });
@@ -512,10 +492,10 @@
       var circle;
       circle = this.g_map.insert('circle', '.plane').attr('cx', x).attr('cy', y).attr('stroke', this.color).attr('stroke-width', 0).attr('fill', this.color);
       return jQuery({
-        r: 5,
+        r: 8,
         o: 0.9
       }).delay(100).animate({
-        r: 8,
+        r: 4,
         o: 0
       }, {
         step: function(now, fx) {
@@ -526,7 +506,7 @@
             return circle.style('opacity', now);
           }
         },
-        duration: 2000,
+        duration: 1500,
         easing: 'easeOutQuad',
         done: (function(_this) {
           return function() {

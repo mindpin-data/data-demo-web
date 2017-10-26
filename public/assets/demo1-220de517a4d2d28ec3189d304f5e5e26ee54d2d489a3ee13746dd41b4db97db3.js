@@ -162,10 +162,9 @@
     };
 
     LineChart.prototype.make_def = function(r, g, b, id) {
-      var lg;
-      lg = this.svg_defs.append('linearGradient').attr('id', id).attr('x1', '0%').attr('y1', '0%').attr('x2', '0%').attr('y2', '100%');
-      lg.append('stop').attr('offset', '0%').attr('stop-color', "rgba(" + r + ", " + g + ", " + b + ", 0.2)");
-      return lg.append('stop').attr('offset', '100%').attr('stop-color', "rgba(" + r + ", " + g + ", " + b + ", 0.0)");
+      this._lg = this.svg_defs.append('linearGradient').attr('id', id).attr('x1', '0%').attr('y1', '0%').attr('x2', '0%').attr('y2', '100%');
+      this._lg.append('stop').attr('offset', '0%').attr('stop-color', "rgba(" + r + ", " + g + ", " + b + ", 0.2)");
+      return this._lg.append('stop').attr('offset', '100%').attr('stop-color', "rgba(" + r + ", " + g + ", " + b + ", 0.0)");
     };
 
     LineChart.prototype.make_defs = function() {
@@ -175,11 +174,11 @@
     };
 
     LineChart.prototype.draw_lines = function() {
-      var _draw, create_line, line1;
-      if (this.panel == null) {
-        this.panel = this.svg.append('g').attr('transform', "translate(42, 10)");
+      if (this.panel != null) {
+        this.panel.remove();
       }
-      line1 = d3.line().x((function(_this) {
+      this.panel = this.svg.append('g').attr('transform', "translate(42, 10)");
+      this.line1 = d3.line().x((function(_this) {
         return function(d, idx) {
           return _this.xscale(idx);
         };
@@ -188,43 +187,43 @@
           return _this.yscale(d);
         };
       })(this)).curve(d3.curveCatmullRom.alpha(0.5));
-      create_line = (function(_this) {
-        return function(data) {
-          return d3.line().x(function(d, idx) {
-            if (idx === 0) {
-              return _this.xscale(data.length - 1);
-            } else if (idx === 1) {
-              return _this.xscale(0);
-            } else {
-              return _this.xscale(idx - 2);
-            }
-          }).y(function(d, idx) {
-            return _this.yscale(d);
-          });
-        };
-      })(this);
       this.panel.selectAll('path.pre-line').remove();
       this.panel.selectAll('circle').remove();
-      _draw = (function(_this) {
-        return function(arealine, line, data, color, fill) {
-          var _data, area, curve, duration;
-          _data = data.map(function(x) {
-            return 0;
-          });
-          duration = 1000;
-          area = _this.panel.append('path').datum([0, 0].concat(_data)).attr('class', 'pre-line').attr('d', arealine).style('fill', fill);
-          area.datum([0, 0].concat(data)).transition().attr('d', arealine).duration(duration).ease(d3.easeCubicOut);
-          curve = _this.panel.append('path').datum(_data).attr('class', 'pre-line').attr('d', line).style('stroke', color).style('fill', 'transparent').style('stroke-width', 2);
-          curve.datum(data).transition().attr('d', line).duration(duration).ease(d3.easeCubicOut);
-          return _data.forEach(function(d, idx) {
-            var circle;
-            circle = _this.panel.append('circle').attr('cx', _this.xscale(idx)).attr('cy', _this.yscale(d)).attr('r', 4).attr('fill', color);
-            return circle.transition().attr('cy', _this.yscale(data[idx])).duration(duration).ease(d3.easeCubicOut);
-          });
+      this._draw(this._create_line(this.data0), this.line1, this.data0, this.c1, 'url(#line-chart-linear1)');
+      return this._draw(this._create_line(this.data1), this.line1, this.data1, this.c2, 'url(#line-chart-linear2)');
+    };
+
+    LineChart.prototype._draw = function(arealine, line, data, color, fill) {
+      var _data, duration;
+      _data = data.map(function(x) {
+        return 0;
+      });
+      duration = 1000;
+      this.panel.append('path').datum([0, 0].concat(_data)).attr('class', 'pre-line').attr('d', arealine).style('fill', fill).datum([0, 0].concat(data)).transition().attr('d', arealine).duration(duration).ease(d3.easeCubicOut);
+      this.panel.append('path').datum(_data).attr('class', 'pre-line').attr('d', line).style('stroke', color).style('fill', 'transparent').style('stroke-width', 2).datum(data).transition().attr('d', line).duration(duration).ease(d3.easeCubicOut);
+      return _data.forEach((function(_this) {
+        return function(d, idx) {
+          return _this.panel.append('circle').attr('cx', _this.xscale(idx)).attr('cy', _this.yscale(d)).attr('r', 4).attr('fill', color).transition().attr('cy', _this.yscale(data[idx])).duration(duration).ease(d3.easeCubicOut);
         };
-      })(this);
-      _draw(create_line(this.data0), line1, this.data0, this.c1, 'url(#line-chart-linear1)');
-      return _draw(create_line(this.data1), line1, this.data1, this.c2, 'url(#line-chart-linear2)');
+      })(this));
+    };
+
+    LineChart.prototype._create_line = function(data) {
+      return d3.line().x((function(_this) {
+        return function(d, idx) {
+          if (idx === 0) {
+            return _this.xscale(data.length - 1);
+          } else if (idx === 1) {
+            return _this.xscale(0);
+          } else {
+            return _this.xscale(idx - 2);
+          }
+        };
+      })(this)).y((function(_this) {
+        return function(d, idx) {
+          return _this.yscale(d);
+        };
+      })(this));
     };
 
     LineChart.prototype.draw_axis = function() {
@@ -303,16 +302,19 @@
     };
 
     OneArea.prototype.draw_flag = function() {
-      var flag;
-      this.svg.select('g.flag').remove();
-      flag = this.svg.append('g').attr('class', 'flag');
-      return flag.append('image').attr('xlink:href', "images/countries/" + this.current_area + ".png").attr('height', this.height - 60).attr('width', (this.height - 60) / 2 * 3).attr('x', 0).attr('y', 30);
+      if (this.flag != null) {
+        this.flag.remove();
+      }
+      this.flag = this.svg.append('g').attr('class', 'flag');
+      return this.flag.append('image').attr('xlink:href', "images/countries/" + this.current_area + ".png").attr('height', this.height - 60).attr('width', (this.height - 60) / 2 * 3).attr('x', 0).attr('y', 30);
     };
 
     OneArea.prototype.draw_texts = function() {
       var number, percent, size, size1, size2, texts;
-      this.svg.select('g.texts').remove();
-      texts = this.svg.append('g').attr('class', 'texts').style('transform', 'translate(210px, 0px)');
+      if (this.texts != null) {
+        this.texts.remove();
+      }
+      this.texts = texts = this.svg.append('g').attr('class', 'texts').style('transform', 'translate(210px, 0px)');
       size = 30;
       texts.append('text').attr('x', 0).attr('y', size / 2 + 20).attr('dy', '.33em').text(this.AREA_DATA[this.current_area].n + "销量").style('font-size', size + 'px').style('fill', '#ffffff');
       size1 = 40;
@@ -356,6 +358,7 @@
 }).call(this);
 (function() {
   var CityAnimate, PathMap, YDYL_AREAS, YDYL_CITIES_NORTH, YDYL_CITIES_SOUTH,
+    bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
@@ -477,6 +480,8 @@
     extend(PathMap, superClass);
 
     function PathMap() {
+      this._draw_curve = bind(this._draw_curve, this);
+      this._draw_city = bind(this._draw_city, this);
       return PathMap.__super__.constructor.apply(this, arguments);
     }
 
@@ -522,7 +527,6 @@
             }
             return results;
           }).call(_this);
-          console.log(ydyls);
           _this.init();
           _this.draw_map();
           _this.draw_cities();
@@ -608,58 +612,51 @@
     };
 
     PathMap.prototype.draw_cities = function() {
-      var _draw_city, city, i, j, len, len1, ref, ref1, results;
-      _draw_city = (function(_this) {
-        return function(city) {
-          var ani, circle;
-          circle = _this.g_layer_curve.append('circle').attr('class', 'runnin').attr('cx', city.x).attr('cy', city.y).attr('r', 8).attr('fill', '#34cee9');
-          ani = function() {
-            return jQuery({
-              r: 8,
-              o: 1
-            }).animate({
-              r: 12,
-              o: 0.5
-            }, {
-              step: function(now, fx) {
-                if (fx.prop === 'r') {
-                  circle.attr('r', now);
-                }
-                if (fx.prop === 'o') {
-                  return circle.style('opacity', now);
-                }
-              },
-              duration: 1000,
-              done: function() {
-                return ani();
-              }
-            });
-          };
-          return ani();
-        };
-      })(this);
+      var city, i, j, len, len1, ref, ref1, results;
       for (i = 0, len = YDYL_CITIES_NORTH.length; i < len; i++) {
         city = YDYL_CITIES_NORTH[i];
         ref = this.projection([city.long, city.lat]), city.x = ref[0], city.y = ref[1];
-        _draw_city(city);
+        this._draw_city(city);
       }
       results = [];
       for (j = 0, len1 = YDYL_CITIES_SOUTH.length; j < len1; j++) {
         city = YDYL_CITIES_SOUTH[j];
         ref1 = this.projection([city.long, city.lat]), city.x = ref1[0], city.y = ref1[1];
-        results.push(_draw_city(city));
+        results.push(this._draw_city(city));
       }
       return results;
     };
 
+    PathMap.prototype._draw_city = function(city) {
+      var ani, circle;
+      circle = this.g_layer_curve.append('circle').attr('class', 'runnin').attr('cx', city.x).attr('cy', city.y).attr('r', 4).attr('fill', '#34cee9');
+      ani = function() {
+        return jQuery({
+          r: 4,
+          o: 1
+        }).animate({
+          r: 12,
+          o: 0.5
+        }, {
+          step: function(now, fx) {
+            if (fx.prop === 'r') {
+              circle.attr('r', now);
+            }
+            if (fx.prop === 'o') {
+              return circle.style('opacity', now);
+            }
+          },
+          duration: 1500,
+          done: function() {
+            return ani();
+          }
+        });
+      };
+      return ani();
+    };
+
     PathMap.prototype.draw_ydyl_curve = function() {
-      var _draw_curve, line;
-      _draw_curve = (function(_this) {
-        return function(line, cities, color) {
-          return _this.g_layer_curve.append('path').attr('class', 'running').datum(cities).attr('d', line).style('stroke', color).style('fill', 'transparent').style('stroke-width', 4).style('stroke-dasharray', '5 10').style('stroke-linecap', 'round');
-        };
-      })(this);
-      line = d3.line().x((function(_this) {
+      this.line1 = d3.line().x((function(_this) {
         return function(d) {
           return d.x;
         };
@@ -668,8 +665,12 @@
           return d.y;
         };
       })(this)).curve(d3.curveCatmullRom.alpha(0.5));
-      _draw_curve(line, YDYL_CITIES_NORTH, '#cdff41');
-      return _draw_curve(line, YDYL_CITIES_SOUTH, '#ff7c41');
+      this._draw_curve(this.line1, YDYL_CITIES_NORTH, '#cdff41');
+      return this._draw_curve(this.line1, YDYL_CITIES_SOUTH, '#ff7c41');
+    };
+
+    PathMap.prototype._draw_curve = function(line, cities, color) {
+      return this.g_layer_curve.append('path').attr('class', 'running').datum(cities).attr('d', line).style('stroke', color).style('fill', 'transparent').style('stroke-width', 4).style('stroke-dasharray', '5 10').style('stroke-linecap', 'round');
     };
 
     return PathMap;
@@ -692,8 +693,7 @@
 
     CityAnimate.prototype.wave = function() {
       this.circle_wave(500);
-      this.circle_wave(1500);
-      this.circle_wave(2500);
+      this.circle_wave(2000);
       return this.circle_wave(3500);
     };
 

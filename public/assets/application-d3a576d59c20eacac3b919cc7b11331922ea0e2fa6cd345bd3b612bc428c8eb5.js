@@ -11885,7 +11885,7 @@ jQuery.extend( jQuery.easing,
         return jQuery.get(window.data_path + ("?" + (Math.random()))).success(function(res) {
           return window.map_data = res;
         });
-      }, 10 * 1000);
+      }, 1000 * 60 * 1);
       return setTimeout((function(_this) {
         return function() {
           return window.location.href = window.location.href;

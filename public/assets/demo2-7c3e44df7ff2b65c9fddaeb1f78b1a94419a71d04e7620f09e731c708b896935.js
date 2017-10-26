@@ -72,6 +72,7 @@
 }).call(this);
 (function() {
   var LineChart,
+    bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty;
 
@@ -79,6 +80,8 @@
     extend(LineChart, superClass);
 
     function LineChart() {
+      this._curve = bind(this._curve, this);
+      this._create_line = bind(this._create_line, this);
       return LineChart.__super__.constructor.apply(this, arguments);
     }
 
@@ -149,13 +152,30 @@
       return this.make_def(255, 222, 0, 'line-chart-linear4');
     };
 
+    LineChart.prototype._create_line = function(data) {
+      return d3.line().x((function(_this) {
+        return function(d, idx) {
+          if (idx === 0) {
+            return _this.xscale(data.length - 1);
+          } else if (idx === 1) {
+            return _this.xscale(0);
+          } else {
+            return _this.xscale(idx - 2);
+          }
+        };
+      })(this)).y((function(_this) {
+        return function(d, idx) {
+          return _this.yscale(d);
+        };
+      })(this));
+    };
+
     LineChart.prototype.draw_lines = function() {
-      var _curve, cidx, create_line, line1;
       if (this.panel != null) {
         this.panel.remove();
       }
       this.panel = this.svg.append('g').attr('transform', "translate(32, 10)");
-      line1 = d3.line().x((function(_this) {
+      this.line1 = d3.line().x((function(_this) {
         return function(d, idx) {
           return _this.xscale(idx);
         };
@@ -164,53 +184,34 @@
           return _this.yscale(d);
         };
       })(this)).curve(d3.curveCatmullRom.alpha(0.5));
-      create_line = (function(_this) {
-        return function(data) {
-          return d3.line().x(function(d, idx) {
-            if (idx === 0) {
-              return _this.xscale(data.length - 1);
-            } else if (idx === 1) {
-              return _this.xscale(0);
-            } else {
-              return _this.xscale(idx - 2);
-            }
-          }).y(function(d, idx) {
-            return _this.yscale(d);
-          });
-        };
-      })(this);
       this.panel.selectAll('path.pre-line').remove();
       this.panel.selectAll('circle').remove();
-      cidx = 0;
-      _curve = (function(_this) {
-        return function(data) {
-          var _data, area, arealine, circle, color, curve, d, fill, i, idx, len, results;
-          if ((data != null) && data.length > 0) {
-            color = _this.colors[cidx];
-            fill = "url(#line-chart-linear" + (cidx + 1) + ")";
-            cidx += 1;
-            arealine = create_line(data);
-            _data = data.map(function(x) {
-              return 0;
-            });
-            area = _this.panel.append('path').datum([0, 0].concat(_data)).attr('class', 'pre-line').attr('d', arealine).style('fill', fill);
-            area.datum([0, 0].concat(data)).transition().duration(1000).attr('d', arealine);
-            curve = _this.panel.append('path').datum(_data).attr('class', 'pre-line').attr('d', line1).style('stroke', color).style('fill', 'transparent').style('stroke-width', 2);
-            curve.datum(data).transition().duration(1000).attr('d', line1);
-            results = [];
-            for (idx = i = 0, len = _data.length; i < len; idx = ++i) {
-              d = _data[idx];
-              circle = _this.panel.append('circle').attr('cx', _this.xscale(idx)).attr('cy', _this.yscale(d)).attr('r', 4).attr('fill', color);
-              results.push(circle.transition().duration(1000).attr('cy', _this.yscale(data[idx])));
-            }
-            return results;
-          }
-        };
-      })(this);
-      _curve(this.locality_1.data);
-      _curve(this.locality_2.data);
-      _curve(this.locality_3.data);
-      return _curve(this.locality_4.data);
+      this.cidx = 0;
+      this._curve(this.locality_1.data);
+      this._curve(this.locality_2.data);
+      this._curve(this.locality_3.data);
+      return this._curve(this.locality_4.data);
+    };
+
+    LineChart.prototype._curve = function(data) {
+      var _data, arealine, color, d, fill, i, idx, len, results;
+      if ((data != null) && data.length > 0) {
+        color = this.colors[this.cidx];
+        fill = "url(#line-chart-linear" + (this.cidx + 1) + ")";
+        this.cidx += 1;
+        arealine = this._create_line(data);
+        _data = data.map(function(x) {
+          return 0;
+        });
+        this.panel.append('path').datum([0, 0].concat(_data)).attr('class', 'pre-line').attr('d', arealine).style('fill', fill).datum([0, 0].concat(data)).transition().duration(1000).attr('d', arealine);
+        this.panel.append('path').datum(_data).attr('class', 'pre-line').attr('d', this.line1).style('stroke', color).style('fill', 'transparent').style('stroke-width', 2).datum(data).transition().duration(1000).attr('d', this.line1);
+        results = [];
+        for (idx = i = 0, len = _data.length; i < len; idx = ++i) {
+          d = _data[idx];
+          results.push(this.panel.append('circle').attr('cx', this.xscale(idx)).attr('cy', this.yscale(d)).attr('r', 4).attr('fill', color).transition().duration(1000).attr('cy', this.yscale(data[idx])));
+        }
+        return results;
+      }
     };
 
     LineChart.prototype.draw_axis = function() {
@@ -252,6 +253,7 @@
     };
 
     Material.prototype.draw = function() {
+      console.log(1111111111);
       this.prepare_data();
       this.svg = this.draw_svg();
       this.idx = -1;
@@ -275,11 +277,12 @@
     };
 
     Material.prototype.draw_icon = function() {
-      var flag;
-      this.svg.select('g.flag').remove();
-      flag = this.svg.append('g').attr('class', 'flag');
-      flag.append('circle').attr('r', this.height / 4).attr('cx', 80).attr('cy', this.height / 2).attr('fill', this.current_product.color).style('opacity', '0.5');
-      return flag.append('image').attr('xlink:href', "images/materials/" + this.current_product.name + ".png").attr('height', this.height / 6 * 2).attr('width', this.height / 6 * 2).attr('x', 80 - this.height / 6).attr('y', this.height / 2 - this.height / 6);
+      if (this.flag != null) {
+        this.flag.remove();
+      }
+      this.flag = this.svg.append('g').attr('class', 'flag');
+      this.flag.append('circle').attr('r', this.height / 4).attr('cx', 80).attr('cy', this.height / 2).attr('fill', this.current_product.color).style('opacity', '0.5');
+      return this.flag.append('image').attr('xlink:href', "images/materials/" + this.current_product.name + ".png").attr('height', this.height / 6 * 2).attr('width', this.height / 6 * 2).attr('x', 80 - this.height / 6).attr('y', this.height / 2 - this.height / 6);
     };
 
     Material.prototype.draw_texts = function() {
@@ -501,11 +504,11 @@
 
     CityAnimate.prototype.wave = function() {
       this.circle_wave(0);
-      return this.timer = setInterval((function(_this) {
+      return this.timer = setTimeout((function(_this) {
         return function() {
-          return _this.circle_wave(0);
+          return _this.wave();
         };
-      })(this), 500);
+      })(this), 1500);
     };
 
     CityAnimate.prototype.stop = function() {
@@ -535,7 +538,7 @@
             return circle.attr('stroke-width', now);
           }
         },
-        duration: 2000,
+        duration: 3000,
         easing: 'easeOutQuad',
         done: function() {
           return circle.remove();
