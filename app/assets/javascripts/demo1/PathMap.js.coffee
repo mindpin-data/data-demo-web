@@ -1,3 +1,5 @@
+# 一带一路，路径地图
+
 YDYL_AREAS = [
   # 中国、蒙古、俄罗斯
   'CHN', 'RUS', 'MNG'
@@ -113,7 +115,7 @@ class PathMap extends Graph
         area = @features.filter((x)-> x.id == code)[0]
         area.id if area?
 
-      console.log ydyls
+      # console.log ydyls
 
 
       @init()
@@ -212,60 +214,64 @@ class PathMap extends Graph
       .attr 'height', 60
 
   draw_cities: ->
-    _draw_city = (city)=>
-      circle = @g_layer_curve.append 'circle'
-        .attr 'class', 'runnin'
-        .attr 'cx', city.x
-        .attr 'cy', city.y
-        .attr 'r', 8
-        .attr 'fill', '#34cee9'
-
-      ani = ->
-        jQuery({r: 8, o: 1}).animate({r: 12, o: 0.5}
-          {
-            step: (now, fx)->
-              if fx.prop == 'r'
-                circle.attr 'r', now
-              if fx.prop == 'o'
-                circle.style 'opacity', now
-            duration: 1000
-            done: ->
-              ani()
-          }
-        )
-
-      ani()
-
-
     for city in YDYL_CITIES_NORTH
       [city.x, city.y] = @projection [city.long, city.lat]
-      _draw_city city
+      @_draw_city city
 
     for city in YDYL_CITIES_SOUTH
       [city.x, city.y] = @projection [city.long, city.lat]
-      _draw_city city
+      @_draw_city city
+
+
+
+  _draw_city: (city)=>
+    circle = @g_layer_curve.append 'circle'
+      .attr 'class', 'runnin'
+      .attr 'cx', city.x
+      .attr 'cy', city.y
+      .attr 'r', 4
+      .attr 'fill', '#34cee9'
+
+    ani = ->
+      jQuery({r: 4, o: 1}).animate({r: 12, o: 0.5}
+        {
+          step: (now, fx)->
+            if fx.prop == 'r'
+              circle.attr 'r', now
+            if fx.prop == 'o'
+              circle.style 'opacity', now
+          duration: 1500
+          done: ->
+            ani()
+        }
+      )
+
+    ani()
+
+
 
   draw_ydyl_curve: ->
     # 一带一路曲线
-    _draw_curve = (line, cities, color)=>
-      @g_layer_curve.append 'path'
-        .attr 'class', 'running'
-        .datum cities
-        .attr 'd', line
-        .style 'stroke', color
-        .style 'fill', 'transparent'
-        .style 'stroke-width', 4
-        .style 'stroke-dasharray', '5 10'
-        .style 'stroke-linecap', 'round'
 
-    line = d3.line()
+    @line1 = d3.line()
       .x (d)=> d.x
       .y (d)=> d.y
       .curve(d3.curveCatmullRom.alpha(0.5))
 
-    _draw_curve line, YDYL_CITIES_NORTH, '#cdff41'
-    _draw_curve line, YDYL_CITIES_SOUTH, '#ff7c41'
+    @_draw_curve @line1, YDYL_CITIES_NORTH, '#cdff41'
+    @_draw_curve @line1, YDYL_CITIES_SOUTH, '#ff7c41'
 
+
+  _draw_curve: (line, cities, color)=>
+    @g_layer_curve.append 'path'
+      .attr 'class', 'running'
+      .datum cities
+      .attr 'd', line
+      .style 'stroke', color
+      .style 'fill', 'transparent'
+      .style 'stroke-width', 4
+      .style 'stroke-dasharray', '5 10'
+      .style 'stroke-linecap', 'round'
 
 
 class CityAnimate
@@ -278,10 +284,15 @@ class CityAnimate
 
   # 在指定的位置用指定的颜色显示依次扩散的光圈
   wave: ->
+    # @circle_wave(500)
+    # @circle_wave(1500)
+    # @circle_wave(2500)
+    # @circle_wave(3500)
+
     @circle_wave(500)
-    @circle_wave(1500)
-    @circle_wave(2500)
+    @circle_wave(2000)
     @circle_wave(3500)
+
 
   # 在指定的位置用指定的颜色显示扩散光圈
   circle_wave: (delay)->
@@ -292,22 +303,24 @@ class CityAnimate
       # .attr 'stroke-width', @width
       .attr 'fill', 'transparent'
 
-    jQuery({ r: 10, o: 1, w: @width}).delay(delay).animate({ r: 100, o: 1, w: 0}
-      {
-        step: (now, fx)->
-          if fx.prop == 'r'
-            circle.attr 'r', now
-          if fx.prop == 'o'
-            circle.style 'opacity', now
-          if fx.prop == 'w'
-            circle.attr 'stroke-width', now
+    jQuery({ r: 10, o: 1, w: @width})
+      .delay(delay)
+      .animate({ r: 100, o: 1, w: 0}
+        {
+          step: (now, fx)->
+            if fx.prop == 'r'
+              circle.attr 'r', now
+            if fx.prop == 'o'
+              circle.style 'opacity', now
+            if fx.prop == 'w'
+              circle.attr 'stroke-width', now
 
-        duration: 3000
-        easing: 'easeOutQuad'
-        done: ->
-          circle.remove()
-      }
-    )
+          duration: 3000
+          easing: 'easeOutQuad'
+          done: ->
+            circle.remove()
+        }
+      )
 
 
 BaseTile.register 'path-map', PathMap

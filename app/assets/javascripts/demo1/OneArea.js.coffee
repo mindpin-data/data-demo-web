@@ -1,3 +1,5 @@
+# 一带一路，单个国旗图
+
 class OneArea extends Graph
   prepare_data: ->
     @AREA_DATA = {}
@@ -36,11 +38,12 @@ class OneArea extends Graph
     @draw_texts()
 
   draw_flag: ->
-    @svg.select('g.flag').remove()
-    flag = @svg.append('g')
+    @flag.remove() if @flag?
+
+    @flag = @svg.append('g')
       .attr 'class', 'flag'
 
-    flag
+    @flag
       .append 'image'
       .attr 'xlink:href', "images/countries/#{@current_area}.png"
       .attr 'height', @height - 60
@@ -49,9 +52,9 @@ class OneArea extends Graph
       .attr 'y', 30
 
   draw_texts: ->
-    @svg.select('g.texts').remove()
+    @texts.remove() if @texts?
 
-    texts = @svg.append('g')
+    @texts = texts = @svg.append('g')
       .attr 'class', 'texts'
       .style 'transform', 'translate(210px, 0px)'
 

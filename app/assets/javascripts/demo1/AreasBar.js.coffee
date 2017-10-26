@@ -1,3 +1,5 @@
+# 一带一路，带国旗的条状图
+
 class AreasBar extends Graph
   prepare_data: ->
     countries = window.map_data.countries
