@@ -20,7 +20,7 @@ class AreasBar extends Graph
 
     @svg
       .append 'text'
-      .attr 'x', 140
+      .attr 'x', 120
       .attr 'y', size / 2 + 30
       .attr 'dy', '.33em'
       .text "原料产地自然灾害预警"
@@ -50,40 +50,47 @@ class AreasBar extends Graph
 
   draw_info: (panel, img, city, weather, date, y = 0)->
 
-    size = 24
+    size = 20
+
+    left = 70
+    img_width = 40
+    gap = size
 
     panel
       .append 'image'
-      .attr 'x', 80
+      .attr 'x', left
       .attr 'y', size / 2 + y
       .attr 'xlink:href', img
       .attr 'height', 40 + 'px'
-      .attr 'width', 40 + 'px'
+      .attr 'width', img_width + 'px'
 
+    left1 = left + img_width + gap
     panel
       .append 'text'
-      .attr 'x', 150
+      .attr 'x', left1
       .attr 'y', size / 2 + 20 + y
       .attr 'dy', '.33em'
       .text city
       .style 'font-size', size + 'px'
       .style 'fill', '#ffffff'
 
+    left2 = left1 + size * 3 + gap
     panel
       .append 'text'
-      .attr 'x', 220
+      .attr 'x', left2
       .attr 'y', size / 2 + 20 + y
       .attr 'dy', '.33em'
       .text weather
       .style 'font-size', size + 'px'
       .style 'fill', '#f66'
 
+    left3 = left2 + size * 4 + gap
     panel
       .append 'text'
-      .attr 'x', 340
+      .attr 'x', left3
       .attr 'y', size / 2 + 20 + y
       .attr 'dy', '.33em'
-      .text date
+      .text date + ' 11:11'
       .style 'font-size', size + 'px'
       .style 'fill', '#ffde00'
 

@@ -46,8 +46,8 @@ class LineChartTitle extends Graph
       .style 'fill', '#ffffff'
 
     left = 32
-    y0 = @height / 2 - 7 + 30
-    y1 = @height / 2 + 30
+    y1 = @height / 2 + 25
+    y0 = y1 - 7
     idx = 0
 
     draw_locality = (locality)=>
@@ -56,20 +56,21 @@ class LineChartTitle extends Graph
           .append 'rect'
           .attr 'x', left
           .attr 'y', y0
-          .attr 'width', 30
-          .attr 'height', 15
+          .attr 'width', 24
+          .attr 'height', 12
           .style 'fill', @colors[idx]
 
+        sz = size * 0.8
         @texts
           .append 'text'
-          .attr 'x', left + 37
+          .attr 'x', left + 24 + 5
           .attr 'y', y1
           .attr 'dy', '.33em'
           .text locality.name
-          .style 'font-size', size * 0.8 + 'px'
+          .style 'font-size', sz + 'px'
           .style 'fill', '#ffffff'
 
-        left += 120
+        left += 24 + sz * 5.5
         idx += 1
 
     draw_locality @locality_1
