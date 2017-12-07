@@ -30,7 +30,7 @@
     AreasBar.prototype.draw_stitle = function() {
       var size;
       size = 24;
-      this.svg.append('text').attr('x', 140).attr('y', size / 2 + 30).attr('dy', '.33em').text("原料产地自然灾害预警").style('font-size', size + 'px').style('fill', '#ffffff');
+      this.svg.append('text').attr('x', 120).attr('y', size / 2 + 30).attr('dy', '.33em').text("原料产地自然灾害预警").style('font-size', size + 'px').style('fill', '#ffffff');
       if (this.scourges.length === 0) {
         return this.svg.append('text').attr('x', 140).attr('y', size / 2 + 30 + 40).attr('dy', '.33em').text("目前没有灾害预警信息").style('font-size', size + 'px').style('fill', '#ffffff');
       }
@@ -52,15 +52,21 @@
     };
 
     AreasBar.prototype.draw_info = function(panel, img, city, weather, date, y) {
-      var size;
+      var gap, img_width, left, left1, left2, left3, size;
       if (y == null) {
         y = 0;
       }
-      size = 24;
-      panel.append('image').attr('x', 80).attr('y', size / 2 + y).attr('xlink:href', img).attr('height', 40 + 'px').attr('width', 40 + 'px');
-      panel.append('text').attr('x', 150).attr('y', size / 2 + 20 + y).attr('dy', '.33em').text(city).style('font-size', size + 'px').style('fill', '#ffffff');
-      panel.append('text').attr('x', 220).attr('y', size / 2 + 20 + y).attr('dy', '.33em').text(weather).style('font-size', size + 'px').style('fill', '#f66');
-      return panel.append('text').attr('x', 340).attr('y', size / 2 + 20 + y).attr('dy', '.33em').text(date).style('font-size', size + 'px').style('fill', '#ffde00');
+      size = 20;
+      left = 70;
+      img_width = 40;
+      gap = size;
+      panel.append('image').attr('x', left).attr('y', size / 2 + y).attr('xlink:href', img).attr('height', 40 + 'px').attr('width', img_width + 'px');
+      left1 = left + img_width + gap;
+      panel.append('text').attr('x', left1).attr('y', size / 2 + 20 + y).attr('dy', '.33em').text(city).style('font-size', size + 'px').style('fill', '#ffffff');
+      left2 = left1 + size * 3 + gap;
+      panel.append('text').attr('x', left2).attr('y', size / 2 + 20 + y).attr('dy', '.33em').text(weather).style('font-size', size + 'px').style('fill', '#f66');
+      left3 = left2 + size * 4 + gap;
+      return panel.append('text').attr('x', left3).attr('y', size / 2 + 20 + y).attr('dy', '.33em').text(date + ' 11:11').style('font-size', size + 'px').style('fill', '#ffde00');
     };
 
     return AreasBar;
@@ -619,15 +625,17 @@
       size = 20;
       this.texts.append('text').attr('x', 10).attr('y', this.height / 2 - 10).attr('dy', '.33em').text(this.current_product.name + "采购价格年度趋势（单位：万元 / 吨）").style('font-size', size + 'px').style('fill', '#ffffff');
       left = 32;
-      y0 = this.height / 2 - 7 + 30;
-      y1 = this.height / 2 + 30;
+      y1 = this.height / 2 + 25;
+      y0 = y1 - 7;
       idx = 0;
       draw_locality = (function(_this) {
         return function(locality) {
+          var sz;
           if ((locality.data != null) && locality.data.length > 0) {
-            _this.texts.append('rect').attr('x', left).attr('y', y0).attr('width', 30).attr('height', 15).style('fill', _this.colors[idx]);
-            _this.texts.append('text').attr('x', left + 37).attr('y', y1).attr('dy', '.33em').text(locality.name).style('font-size', size * 0.8 + 'px').style('fill', '#ffffff');
-            left += 120;
+            _this.texts.append('rect').attr('x', left).attr('y', y0).attr('width', 24).attr('height', 12).style('fill', _this.colors[idx]);
+            sz = size * 0.8;
+            _this.texts.append('text').attr('x', left + 24 + 5).attr('y', y1).attr('dy', '.33em').text(locality.name).style('font-size', sz + 'px').style('fill', '#ffffff');
+            left += 24 + sz * 5.5;
             return idx += 1;
           }
         };
