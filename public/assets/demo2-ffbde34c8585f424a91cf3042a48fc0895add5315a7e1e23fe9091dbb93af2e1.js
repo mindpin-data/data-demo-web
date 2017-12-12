@@ -66,7 +66,7 @@
       left2 = left1 + size * 3 + gap;
       panel.append('text').attr('x', left2).attr('y', size / 2 + 20 + y).attr('dy', '.33em').text(weather).style('font-size', size + 'px').style('fill', '#f66');
       left3 = left2 + size * 4 + gap;
-      return panel.append('text').attr('x', left3).attr('y', size / 2 + 20 + y).attr('dy', '.33em').text(date + ' 11:11').style('font-size', size + 'px').style('fill', '#ffde00');
+      return panel.append('text').attr('x', left3).attr('y', size / 2 + 20 + y).attr('dy', '.33em').text(date).style('font-size', size + 'px').style('fill', '#ffde00');
     };
 
     return AreasBar;
