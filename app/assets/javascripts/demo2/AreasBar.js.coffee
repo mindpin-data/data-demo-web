@@ -90,7 +90,7 @@ class AreasBar extends Graph
       .attr 'x', left3
       .attr 'y', size / 2 + 20 + y
       .attr 'dy', '.33em'
-      .text date + ' 11:11'
+      .text date
       .style 'font-size', size + 'px'
       .style 'fill', '#ffde00'
 
