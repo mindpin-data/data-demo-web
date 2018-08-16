@@ -11,13 +11,16 @@
     }
 
     LineChart.prototype.prepare_data = function() {
-      this.data0 = window.map_data.now;
-      this.data1 = window.map_data.forecast;
-      return this.data2 = window.map_data.history;
+      var e, s;
+      s = window.startmonth - 1;
+      e = window.endmonth - 1;
+      this.data0 = window.map_data.now.slice(s, +e + 1 || 9e9);
+      this.data1 = window.map_data.forecast.slice(s, +e + 1 || 9e9);
+      return this.data2 = window.map_data.history.slice(s, +e + 1 || 9e9);
     };
 
     LineChart.prototype.draw = function() {
-      var bar_width;
+      var _bar_domain, _xscale_domain, _yscale_domain, bar_width;
       this.prepare_data();
       this.svg = this.draw_svg();
       this.make_defs();
@@ -27,10 +30,13 @@
       this.c1 = '#00ff18';
       this.c2 = '#21ed00';
       this.c3 = '#ffad00';
-      this.barscale = d3.scaleBand().domain([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]).range([0, this.w]).paddingInner(0.5).paddingOuter(0);
+      _bar_domain = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+      _xscale_domain = [0, 11];
+      _yscale_domain = [0, 10];
+      this.barscale = d3.scaleBand().domain(_bar_domain).range([0, this.w]).paddingInner(0.5).paddingOuter(0);
       bar_width = this.barscale.bandwidth();
-      this.xscale = d3.scaleLinear().domain([0, 11]).range([bar_width / 2, this.w - bar_width / 2]);
-      this.yscale = d3.scaleLinear().domain([0, 10]).range([this.h, 0]);
+      this.xscale = d3.scaleLinear().domain(_xscale_domain).range([bar_width / 2, this.w - bar_width / 2]);
+      this.yscale = d3.scaleLinear().domain(_yscale_domain).range([this.h, 0]);
       this.draw_axis();
       this.draw_lines();
       return jQuery(document).on('data-map:next-draw', (function(_this) {

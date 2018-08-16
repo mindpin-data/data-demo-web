@@ -8,7 +8,7 @@ class DemoData
       {}.merge(Material.data).merge(Scourge.data).merge(Locality.data)
     end
 
-    def demo3
+    def demo3(params)
       {}.merge(CityAmount.data).merge(TotalAmount.data)
     end
   end

@@ -9,19 +9,17 @@ class HomeController < ApplicationController
       'demo4' => '出口销量（小）'
     }[@demo]
 
-    render template: "home/#{@demo}.html.haml"
+    render template: "home/#{@demo}.html.haml", locals: { params: params }
   end
 
   def data
     data = case params[:demo]
       when 'demo1'
-        d = DemoData.demo1
-        # d[:countries][0][:total] = 3000000
-        # d
+        DemoData.demo1
       when 'demo2'
         DemoData.demo2
       when 'demo3', 'demo4'
-        DemoData.demo3
+        DemoData.demo3(params)
     end
 
     render json: data

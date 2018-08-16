@@ -1,15 +1,22 @@
 # 全球销量，折线图，无动画
+# 画面下方的部分
+# 默认显示 1-12 月
+# 根据 window.startmonth 和 window.endmonth 确定起止月份
 
 class LineChart extends Graph
   prepare_data: ->
-    @data0 = window.map_data.now
-    @data1 = window.map_data.forecast
-    @data2 = window.map_data.history
+    s = window.startmonth - 1
+    e = window.endmonth - 1
+
+    @data0 = window.map_data.now[s..e]
+    @data1 = window.map_data.forecast[s..e]
+    @data2 = window.map_data.history[s..e]
 
   draw: ->
+    # 准备数据
     @prepare_data()
 
-
+    # 准备画布
     @svg = @draw_svg()
     @make_defs()
 
@@ -21,8 +28,12 @@ class LineChart extends Graph
     @c2 = '#21ed00'
     @c3 = '#ffad00'
 
+    _bar_domain = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ]
+    _xscale_domain = [ 0, 11 ]
+    _yscale_domain = [ 0, 10 ]
+
     @barscale = d3.scaleBand()
-      .domain [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+      .domain _bar_domain
       .range [0, @w]
       .paddingInner 0.5
       .paddingOuter 0
@@ -30,11 +41,11 @@ class LineChart extends Graph
     bar_width = @barscale.bandwidth()
 
     @xscale = d3.scaleLinear()
-      .domain [0, 11]
+      .domain _xscale_domain
       .range [bar_width / 2, @w - bar_width / 2]
 
     @yscale = d3.scaleLinear()
-      .domain [0, 10]
+      .domain _yscale_domain
       .range [@h, 0]
 
     @draw_axis()

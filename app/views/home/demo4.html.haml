@@ -1,3 +1,7 @@
+:javascript
+  window.startmonth = #{params[:startmonth] || 1}
+  window.endmonth = #{params[:endmonth] || 12}
+
 .paper.c900
   .tile.nbg{"data-layout" => "[0, 0, 24, 16]"}
     #heatmap.tile.nbg{"data-g" => "main-map", "data-layout" => "[0, 0, 24, 24]"}
